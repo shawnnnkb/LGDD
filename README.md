@@ -7,7 +7,7 @@
 ## 📜 Abstract
  
 4D millimeter-wave radar plays a pivotal role in autonomous driving due to its cost-effectiveness and robustness in adverse weather. However, the application of 4D radar point cloud in 3D perception tasks is hindered by its inherent sparsity and noise. To address these challenges, we propose LGDD, a novel local-global synergistic dual-branch 3D object detection framework using 4D radar. Specifically, we first introduce a point-based branch, which utilize a voxel-attended point feature extractor (VPE) to integrate semantic segmentation with cluster voting, thereby mitigating radar noise and extracting local-clustered instances features. Then, for the conventional pillar-based branch, we design a query-based feature pre-fusion (QFP) to address the sparsity and enhance global context representation. Additionally, we devise a proposal mask to filter out noisy points, enabling more focused clustering on regions of interest. Finally, we align the local instances with global context through semantics-geometry aware fusion (SGF) module to achieve comprehensive scene understanding. Extensive experiments demonstrate that LGDD achieves state-of-the-art performance on the public View-of-Delft and TJ4DRadSet datasets.
-![overview](./docs/all_Figures/Comparison.png)
+<img src="./docs/all_Figures/Comparison.png" alt="overview" width="500"/>
 Performance-latency comparison on the View-of-Delft \cite{VoD} (left) and TJ4DRadaSet \cite{TJ4DRadSet} (right) datasets, respectively. The frames per second (FPS) are represented by the diameter of the blobs.
 ## 🛠️ Method
 
@@ -63,6 +63,6 @@ If you find our work beneficial for your research, please consider citing our pa
 
 ## 🐸 Visualization Results
 
-![View-of-Delft](./docs/all_Figures/Visualization.png)
+![Visualization](./docs/all_Figures/Visualization.png)
 
 Figures (a), (b), and (c) show some visualization results on the VoD \cite{VoD} validation set, while (d), (e), and (f) show results on the TJ4DRadSet \cite{TJ4DRadSet} test set. Orange and yellow boxes represent ground truths in the perspective and bird's-eye views, respectively, while blue and green boxes indicate predicted bounding boxes in the corresponding views. The first and second figures compare the baseline with our LGDD \cite{RCFusion}, while the third visualizes LGDD's detection on the image plane. Better zoom in for details.
