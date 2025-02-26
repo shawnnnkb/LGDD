@@ -32,10 +32,29 @@ step 3. Refer to [train_and_eval.md](./docs/Guidance/train_and_eval.md) for trai
 
 We retrained the model and achieved better performance compared to the results reported in the tables of the paper. We provide the checkpoints on View-of-delft (VoD) and TJ4DRadSet datasets, reproduced with the released codebase.
 
-|                           Dataset                            | Backbone | EAA 3D mAP | DC 3D mAP |                        Model Weights                         |
-| :----------------------------------------------------------: | :------: | :--------: | :-------: | :----------------------------------------------------------: |
-| [View-of-delft](projects/LGDD/configs/vod-LGDD_det3d_2x4_12e.py) | ResNet50 |   59.75    |   77.42   | [Link](https://github.com/shawnnnkb/LGDD-release/releases/download/v1.0/final_ckpt.zip) |
-| [TJ4DRadSet](projects/LGDD/configs/TJ4D-LGDD_det3d_2x4_12e.py) | ResNet50 |   41.82    |   47.16   | [Link](https://github.com/shawnnnkb/LGDD-release/releases/download/v1.0/final_ckpt.zip) |
+| **Dataset**                                                  | **Method**    | **EAA 3D mAP** | **DC 3D mAP** | **Model Weights**    |
+| :----------------------------------------------------------: | :-----------: | :------------: | :-----------: | :------------------: |
+| <td rowspan="2">[View-of-delft](projects/LGDD/configs/vod-LGDD_2x4_24e.py)</td> | RadarPillarNet |   59.75        |   77.42       | [Link]()            |
+|                                                              | RadarPillarNet |   59.75        |   77.42       | [Link]()            |
+| [TJ4DRadSet](projects/LGDD/configs/TJ4D-LGDD_2x4_24e.py)      | LGDD          |   41.82        |   47.16       | [Link]()            |
+
+<table>
+  	<tr>
+		<th align="left" >A B</th>
+		<th align="left" >C D</th>
+	<tr>
+	<tr>
+		<th align="left"  colspan="2">E F G H</th>
+	<tr>
+	<tr>
+		<th align="left"  rowspan="2">I J M N </th>
+		<td align="left" >K L</td>
+	</tr>
+	<tr>
+		<td  align="left" >O P</td>
+	</tr>
+</table>
+
 
 ### 😙 Acknowledgement
 
