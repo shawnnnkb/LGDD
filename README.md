@@ -33,6 +33,7 @@ step 3. Refer to [train_and_eval.md](./docs/Guidance/train_and_eval.md) for trai
 
 We retrained the model and achieved better performance compared to the results reported in the tables of the paper. We provide the checkpoints on View-of-delft (VoD) and TJ4DRadSet datasets, reproduced with the released codebase.
 
+| Datasets                                                     | Metric 1       | Metric2       | Details       |
 | :----------------------------------------------------------: | :------------: | :-----------: | :-----------: |
 | **VoD**                                                      | **EAA 3D mAP** | **DC 3D mAP** | **Weights**   |
 | Baseline                                                     |    46.01       |   65.86       |        -      |   

@@ -5,8 +5,6 @@ Download the [View-of-delft](https://github.com/tudelft-iv/view-of-delft-dataset
 ### preparation
 ```bash
 ln -s /your_path/view_of_delft_PUBLIC/ ./data/VoD
-python projects/LGDD/preprocess/gen_panoptic_seg_vod.py
-python projects/LGDD/preprocess/png2npy_vod.py
 python tools_det3d/create_data_VODradar.py # creat radar_5frames data as radar data
 python tools_det3d/create_data_VODlidar.py # creat lidar data, for lidar detection
 ```
@@ -53,8 +51,6 @@ Download the dataset from [TJ4DRadSet](https://github.com/TJRadarLab/TJ4DRadSet)
 ### preparation
 ```bash
 ln -s /your_path/TJ4DRadSet_4DRadar/ ./data/TJ4D
-python projects/LGDD/preprocess/gen_panoptic_seg_TJ4D.py
-python projects/LGDD/preprocess/png2npy_TJ4D.py
 python tools_det3d/create_data_TJ4Dradar.py # creat radar data (1 scan)
 ```
 ### Folder Structure
