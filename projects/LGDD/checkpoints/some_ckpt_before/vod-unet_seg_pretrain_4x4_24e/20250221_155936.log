@@ -1,0 +1,1242 @@
+2025-02-21 15:59:36,412 - mmdet - INFO - Environment info:
+------------------------------------------------------------
+sys.platform: linux
+Python: 3.7.16 (default, Jan 17 2023, 22:20:44) [GCC 11.2.0]
+CUDA available: True
+GPU 0,1,2,3: NVIDIA GeForce RTX 4090
+CUDA_HOME: /home/yq/cuda-11.6
+NVCC: Build cuda_11.6.r11.6/compiler.30794723_0
+GCC: gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0
+PyTorch: 1.9.1+cu111
+PyTorch compiling details: PyTorch built with:
+  - GCC 7.3
+  - C++ Version: 201402
+  - Intel(R) Math Kernel Library Version 2020.0.0 Product Build 20191122 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v2.1.2 (Git Hash 98be7e8afa711dc9b66c8ff3504129cb82013cdb)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 11.1
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86
+  - CuDNN 8.0.5
+  - Magma 2.5.2
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=11.1, CUDNN_VERSION=8.0.5, CXX_COMPILER=/opt/rh/devtoolset-7/root/usr/bin/c++, CXX_FLAGS= -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_KINETO -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_VERSION=1.9.1, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, 
+
+TorchVision: 0.10.1+cu111
+OpenCV: 4.11.0
+MMCV: 1.4.0
+MMCV Compiler: GCC 7.3
+MMCV CUDA Compiler: 11.1
+MMDetection: 2.14.0
+MMSegmentation: 0.14.1
+MMDetection3D: 0.17.0+
+------------------------------------------------------------
+
+2025-02-21 15:59:37,266 - mmdet - INFO - Distributed training: True
+2025-02-21 15:59:38,187 - mmdet - INFO - Config:
+custom_imports = dict(imports=['projects.LGDD.mmdet3d_plugin'])
+dataset_type = 'VoDDataset'
+data_root = 'data/VoD/radar_5frames/'
+class_names = ['Pedestrian', 'Cyclist', 'Car']
+input_modality = dict(use_lidar=True, use_camera=True)
+file_client_args = dict(backend='disk')
+point_cloud_range = [0, -25.6, -3, 51.2, 25.6, 2]
+post_center_range = [-10, -35.6, -8, 61.2, 35.6, 7]
+voxel_size = [0.32, 0.32, 5.76]
+seg_voxel_size = [0.16, 0.16, 0.24]
+seg_score_thresh = [0.25, 0.25, 0.3]
+grid_config = dict(
+    xbound=[0, 51.2, 0.32],
+    ybound=[-25.6, 25.6, 0.32],
+    zbound=[-3, 2, 5.76],
+    dbound=[1.0, 49, 1.0])
+code_weights = [2.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+code_size = 8
+D_bins = 48
+SAVE_INTERVALS = 100
+framework_type = 'student'
+box3d_supervision = dict(use=True, weight=1.0)
+depth_supervision = dict(use=False, weight=1.0)
+msk2d_supervision = dict(use=False, weight=1.0)
+props_supervision = dict(use=False, weight=1.0)
+depth_complet = dict(point_depth=True, extra_depth=False)
+camera_stream = dict(aware=dict(depth=True, pixel=True))
+focus_modules = dict(use=False, weight=0.1)
+distill_setts = dict(
+    use=False,
+    semi=False,
+    DCN=False,
+    QPF_with_GNN=False,
+    QFP_with_segmentor=True,
+    point_supervision=dict(use=False, weight=0.1),
+    radar_supervision=dict(use=False, weight=0.1),
+    teacher_cfg='projects/LGDD/configs/vod-LGDD_teachers_2x4_12e.py',
+    checkpoint='work_dirs/vod-LGDD_teachers_2x4_12e/epoch_12.pth')
+img_norm_cfg = dict(
+    mean=[103.53, 116.28, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
+ida_aug_conf = dict(
+    resize_lim=(0.5, 0.7),
+    final_dim=(800, 1280),
+    final_dim_test=(800, 1280),
+    bot_pct_lim=(0.0, 0.0),
+    top_pct_lim=(0.0, 0.3),
+    rot_lim=(-2.7, 2.7),
+    rand_flip=True)
+bda_aug_conf = dict(
+    rot_range=(-0.3925, 0.3925),
+    scale_ratio_range=(0.95, 1.05),
+    translation_std=(0.0, 0.0, 0.0),
+    flip_dx_ratio=0.0,
+    flip_dy_ratio=0.5)
+bev_h_ = 160
+bev_w_ = 160
+img_channels = 256
+rad_channels = 384
+downsample = 8
+_dim_ = 256
+model = dict(
+    type='VoteSegmentor',
+    voxel_layer=dict(
+        voxel_size=[0.16, 0.16, 0.24],
+        max_num_points=-1,
+        point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2],
+        max_voxels=(-1, -1)),
+    voxel_encoder=dict(
+        type='CustomDynamicScatterVFE',
+        in_channels=5,
+        feat_channels=[64, 64],
+        voxel_size=[0.16, 0.16, 0.24],
+        with_cluster_center=True,
+        with_voxel_center=True,
+        point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2],
+        norm_cfg=dict(type='BN1d', eps=0.001, momentum=0.01),
+        unique_once=True),
+    middle_encoder=dict(type='PseudoMiddleEncoder'),
+    backbone=dict(
+        type='SimpleSparseUNet',
+        in_channels=64,
+        sparse_shape=[32, 640, 640],
+        order=('conv', 'norm', 'act'),
+        norm_cfg=dict(type='BN1d', eps=0.001, momentum=0.01),
+        base_channels=64,
+        output_channels=128,
+        encoder_channels=((64, ), (64, 64, 64), (64, 64, 64), (128, 128, 128),
+                          (256, 256, 256)),
+        encoder_paddings=((1, ), (1, 1, 1), (1, 1, 1), ((0, 1, 1), 1, 1),
+                          (1, 1, 1)),
+        decoder_channels=((256, 256, 128), (128, 128, 64), (64, 64, 64),
+                          (64, 64, 64), (64, 64, 64)),
+        decoder_paddings=((1, 1), (1, 0), (1, 0), (0, 0), (0, 1))),
+    decode_neck=dict(
+        type='Voxel2PointScatterNeck',
+        voxel_size=[0.16, 0.16, 0.24],
+        point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2],
+        with_xyz=False),
+    segmentation_head=dict(
+        type='VoteSegHead',
+        in_channel=64,
+        hidden_dims=[128, 128],
+        num_classes=3,
+        dropout_ratio=0.0,
+        conv_cfg=dict(type='Conv1d'),
+        norm_cfg=dict(type='BN1d'),
+        act_cfg=dict(type='ReLU'),
+        loss_decode=dict(
+            type='FocalLoss',
+            use_sigmoid=True,
+            gamma=3.0,
+            alpha=0.8,
+            loss_weight=1.0),
+        loss_vote=dict(type='L1Loss', loss_weight=1.0)),
+    train_cfg=dict(
+        point_loss=True,
+        score_thresh=[0.25, 0.25, 0.3],
+        class_names=['Pedestrian', 'Cyclist', 'Car'],
+        centroid_offset=False),
+    meta_info=dict(
+        figures_path='./work_dirs/vod-unet_seg_pretrain_4x4_24e/figures_path',
+        project_name='vod-unet_seg_pretrain_4x4_24e'))
+train_pipeline = [
+    dict(
+        type='LoadPointsFromFile',
+        coord_type='LIDAR',
+        load_dim=7,
+        use_dim=[0, 1, 2, 3, 5]),
+    dict(
+        type='LoadAnnotations3D',
+        with_bbox_3d=True,
+        with_label_3d=True,
+        with_bbox=False,
+        with_label=False),
+    dict(
+        type='GlobalRotScaleTransFlipAll',
+        bda_aug_conf=dict(
+            rot_range=(-0.3925, 0.3925),
+            scale_ratio_range=(0.95, 1.05),
+            translation_std=(0.0, 0.0, 0.0),
+            flip_dx_ratio=0.0,
+            flip_dy_ratio=0.5),
+        is_train=True),
+    dict(
+        type='RandomJitterPoints',
+        jitter_std=[0.01, 0.01, 0.01],
+        clip_range=[-0.05, 0.05]),
+    dict(
+        type='PointsRangeFilter',
+        point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2]),
+    dict(
+        type='ObjectRangeFilter',
+        point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2]),
+    dict(type='PointShuffle'),
+    dict(
+        type='DefaultFormatBundle3D',
+        class_names=['Pedestrian', 'Cyclist', 'Car']),
+    dict(
+        type='CustomCollect3D',
+        keys=['points', 'gt_bboxes_3d', 'gt_labels_3d'])
+]
+test_pipeline = [
+    dict(
+        type='LoadPointsFromFile',
+        coord_type='LIDAR',
+        load_dim=7,
+        use_dim=[0, 1, 2, 3, 5]),
+    dict(
+        type='LoadAnnotations3D',
+        with_bbox_3d=True,
+        with_label_3d=True,
+        with_bbox=False,
+        with_label=False),
+    dict(
+        type='GlobalRotScaleTransFlipAll',
+        bda_aug_conf=dict(
+            rot_range=(-0.3925, 0.3925),
+            scale_ratio_range=(0.95, 1.05),
+            translation_std=(0.0, 0.0, 0.0),
+            flip_dx_ratio=0.0,
+            flip_dy_ratio=0.5),
+        is_train=False),
+    dict(
+        type='PointsRangeFilter',
+        point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2]),
+    dict(
+        type='DefaultFormatBundle3D',
+        class_names=['Pedestrian', 'Cyclist', 'Car'],
+        with_label=False),
+    dict(
+        type='CustomCollect3D',
+        keys=['points', 'gt_bboxes_3d', 'gt_labels_3d'])
+]
+eval_pipeline = [
+    dict(
+        type='LoadPointsFromFile',
+        coord_type='LIDAR',
+        load_dim=7,
+        use_dim=[0, 1, 2, 3, 5]),
+    dict(
+        type='LoadAnnotations3D',
+        with_bbox_3d=True,
+        with_label_3d=True,
+        with_bbox=False,
+        with_label=False),
+    dict(
+        type='GlobalRotScaleTransFlipAll',
+        bda_aug_conf=dict(
+            rot_range=(-0.3925, 0.3925),
+            scale_ratio_range=(0.95, 1.05),
+            translation_std=(0.0, 0.0, 0.0),
+            flip_dx_ratio=0.0,
+            flip_dy_ratio=0.5),
+        is_train=False),
+    dict(
+        type='PointsRangeFilter',
+        point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2]),
+    dict(
+        type='DefaultFormatBundle3D',
+        class_names=['Pedestrian', 'Cyclist', 'Car'],
+        with_label=False),
+    dict(
+        type='CustomCollect3D',
+        keys=['points', 'gt_bboxes_3d', 'gt_labels_3d'])
+]
+data = dict(
+    samples_per_gpu=4,
+    workers_per_gpu=4,
+    train=dict(
+        type='RepeatDataset',
+        times=1,
+        dataset=dict(
+            type='VoDDataset',
+            data_root='data/VoD/radar_5frames/',
+            ann_file='data/VoD/radar_5frames/vod_infos_train.pkl',
+            split='training',
+            pts_prefix='velodyne_reduced',
+            pipeline=[
+                dict(
+                    type='LoadPointsFromFile',
+                    coord_type='LIDAR',
+                    load_dim=7,
+                    use_dim=[0, 1, 2, 3, 5]),
+                dict(
+                    type='LoadAnnotations3D',
+                    with_bbox_3d=True,
+                    with_label_3d=True,
+                    with_bbox=False,
+                    with_label=False),
+                dict(
+                    type='GlobalRotScaleTransFlipAll',
+                    bda_aug_conf=dict(
+                        rot_range=(-0.3925, 0.3925),
+                        scale_ratio_range=(0.95, 1.05),
+                        translation_std=(0.0, 0.0, 0.0),
+                        flip_dx_ratio=0.0,
+                        flip_dy_ratio=0.5),
+                    is_train=True),
+                dict(
+                    type='RandomJitterPoints',
+                    jitter_std=[0.01, 0.01, 0.01],
+                    clip_range=[-0.05, 0.05]),
+                dict(
+                    type='PointsRangeFilter',
+                    point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2]),
+                dict(
+                    type='ObjectRangeFilter',
+                    point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2]),
+                dict(type='PointShuffle'),
+                dict(
+                    type='DefaultFormatBundle3D',
+                    class_names=['Pedestrian', 'Cyclist', 'Car']),
+                dict(
+                    type='CustomCollect3D',
+                    keys=['points', 'gt_bboxes_3d', 'gt_labels_3d'])
+            ],
+            modality=dict(use_lidar=True, use_camera=True),
+            classes=['Pedestrian', 'Cyclist', 'Car'],
+            test_mode=False,
+            box_type_3d='LiDAR')),
+    val=dict(
+        type='VoDDataset',
+        data_root='data/VoD/radar_5frames/',
+        ann_file='data/VoD/radar_5frames/vod_infos_val.pkl',
+        split='training',
+        pts_prefix='velodyne_reduced',
+        pipeline=[
+            dict(
+                type='LoadPointsFromFile',
+                coord_type='LIDAR',
+                load_dim=7,
+                use_dim=[0, 1, 2, 3, 5]),
+            dict(
+                type='LoadAnnotations3D',
+                with_bbox_3d=True,
+                with_label_3d=True,
+                with_bbox=False,
+                with_label=False),
+            dict(
+                type='GlobalRotScaleTransFlipAll',
+                bda_aug_conf=dict(
+                    rot_range=(-0.3925, 0.3925),
+                    scale_ratio_range=(0.95, 1.05),
+                    translation_std=(0.0, 0.0, 0.0),
+                    flip_dx_ratio=0.0,
+                    flip_dy_ratio=0.5),
+                is_train=False),
+            dict(
+                type='PointsRangeFilter',
+                point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2]),
+            dict(
+                type='DefaultFormatBundle3D',
+                class_names=['Pedestrian', 'Cyclist', 'Car'],
+                with_label=False),
+            dict(
+                type='CustomCollect3D',
+                keys=['points', 'gt_bboxes_3d', 'gt_labels_3d'])
+        ],
+        modality=dict(use_lidar=True, use_camera=True),
+        classes=['Pedestrian', 'Cyclist', 'Car'],
+        test_mode=False,
+        box_type_3d='LiDAR'),
+    test=dict(
+        type='VoDDataset',
+        data_root='data/VoD/radar_5frames/',
+        ann_file='data/VoD/radar_5frames/vod_infos_val.pkl',
+        split='training',
+        pts_prefix='velodyne_reduced',
+        pipeline=[
+            dict(
+                type='LoadPointsFromFile',
+                coord_type='LIDAR',
+                load_dim=7,
+                use_dim=[0, 1, 2, 3, 5]),
+            dict(
+                type='LoadAnnotations3D',
+                with_bbox_3d=True,
+                with_label_3d=True,
+                with_bbox=False,
+                with_label=False),
+            dict(
+                type='GlobalRotScaleTransFlipAll',
+                bda_aug_conf=dict(
+                    rot_range=(-0.3925, 0.3925),
+                    scale_ratio_range=(0.95, 1.05),
+                    translation_std=(0.0, 0.0, 0.0),
+                    flip_dx_ratio=0.0,
+                    flip_dy_ratio=0.5),
+                is_train=False),
+            dict(
+                type='PointsRangeFilter',
+                point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2]),
+            dict(
+                type='DefaultFormatBundle3D',
+                class_names=['Pedestrian', 'Cyclist', 'Car'],
+                with_label=False),
+            dict(
+                type='CustomCollect3D',
+                keys=['points', 'gt_bboxes_3d', 'gt_labels_3d'])
+        ],
+        modality=dict(use_lidar=True, use_camera=True),
+        classes=['Pedestrian', 'Cyclist', 'Car'],
+        test_mode=False,
+        box_type_3d='LiDAR'))
+evaluation = dict(
+    interval=24,
+    pipeline=[
+        dict(
+            type='LoadPointsFromFile',
+            coord_type='LIDAR',
+            load_dim=7,
+            use_dim=[0, 1, 2, 3, 5]),
+        dict(
+            type='LoadAnnotations3D',
+            with_bbox_3d=True,
+            with_label_3d=True,
+            with_bbox=False,
+            with_label=False),
+        dict(
+            type='GlobalRotScaleTransFlipAll',
+            bda_aug_conf=dict(
+                rot_range=(-0.3925, 0.3925),
+                scale_ratio_range=(0.95, 1.05),
+                translation_std=(0.0, 0.0, 0.0),
+                flip_dx_ratio=0.0,
+                flip_dy_ratio=0.5),
+            is_train=False),
+        dict(
+            type='PointsRangeFilter',
+            point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2]),
+        dict(
+            type='DefaultFormatBundle3D',
+            class_names=['Pedestrian', 'Cyclist', 'Car'],
+            with_label=False),
+        dict(
+            type='CustomCollect3D',
+            keys=['points', 'gt_bboxes_3d', 'gt_labels_3d'])
+    ])
+lr = 3e-05
+optimizer = dict(
+    type='AdamW',
+    lr=3e-05,
+    betas=(0.9, 0.999),
+    weight_decay=0.05,
+    paramwise_cfg=dict(custom_keys=dict(norm=dict(decay_mult=0.0))))
+optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
+lr_config = dict(
+    policy='cyclic',
+    target_ratio=(100, 0.001),
+    cyclic_times=1,
+    step_ratio_up=0.1)
+momentum_config = None
+runner = dict(type='EpochBasedRunner', max_epochs=24)
+checkpoint_config = dict(interval=2)
+log_config = dict(
+    interval=50,
+    hooks=[dict(type='TextLoggerHook'),
+           dict(type='TensorboardLoggerHook')])
+dist_params = dict(backend='nccl')
+log_level = 'INFO'
+load_from = None
+load_radar_from = None
+resume_from = None
+workflow = [('train', 1)]
+work_dir = './work_dirs/vod-unet_seg_pretrain_4x4_24e'
+gpu_ids = range(0, 4)
+
+2025-02-21 15:59:38,188 - mmdet - INFO - Set random seed to 0, deterministic: False
+Name of parameter - Initialization information
+
+voxel_encoder.vfe_layers.0.norm.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+voxel_encoder.vfe_layers.0.norm.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+voxel_encoder.vfe_layers.0.linear.weight - torch.Size([64, 11]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+voxel_encoder.vfe_layers.1.norm.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+voxel_encoder.vfe_layers.1.norm.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+voxel_encoder.vfe_layers.1.linear.weight - torch.Size([64, 128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.conv_input.0.weight - torch.Size([3, 3, 3, 64, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.conv_input.1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.conv_input.1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer1.0.0.weight - torch.Size([3, 3, 3, 64, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer1.0.1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer1.0.1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer2.0.0.weight - torch.Size([3, 3, 3, 64, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer2.0.1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer2.0.1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer2.1.0.weight - torch.Size([3, 3, 3, 64, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer2.1.1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer2.1.1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer2.2.0.weight - torch.Size([3, 3, 3, 64, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer2.2.1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer2.2.1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer3.0.0.weight - torch.Size([3, 3, 3, 64, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer3.0.1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer3.0.1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer3.1.0.weight - torch.Size([3, 3, 3, 64, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer3.1.1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer3.1.1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer3.2.0.weight - torch.Size([3, 3, 3, 64, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer3.2.1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer3.2.1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer4.0.0.weight - torch.Size([3, 3, 3, 64, 128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer4.0.1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer4.0.1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer4.1.0.weight - torch.Size([3, 3, 3, 128, 128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer4.1.1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer4.1.1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer4.2.0.weight - torch.Size([3, 3, 3, 128, 128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer4.2.1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer4.2.1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer5.0.0.weight - torch.Size([3, 3, 3, 128, 256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer5.0.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer5.0.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer5.1.0.weight - torch.Size([3, 3, 3, 256, 256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer5.1.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer5.1.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer5.2.0.weight - torch.Size([3, 3, 3, 256, 256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer5.2.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.encoder_layers.encoder_layer5.2.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer5.conv1.weight - torch.Size([3, 3, 3, 256, 256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer5.bn1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer5.bn1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer5.conv2.weight - torch.Size([3, 3, 3, 256, 256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer5.bn2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer5.bn2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.merge_layer5.0.weight - torch.Size([3, 3, 3, 512, 256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.merge_layer5.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.merge_layer5.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.upsample_layer5.0.weight - torch.Size([3, 3, 3, 256, 128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.upsample_layer5.1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.upsample_layer5.1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer4.conv1.weight - torch.Size([3, 3, 3, 128, 128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer4.bn1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer4.bn1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer4.conv2.weight - torch.Size([3, 3, 3, 128, 128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer4.bn2.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer4.bn2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.merge_layer4.0.weight - torch.Size([3, 3, 3, 256, 128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.merge_layer4.1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.merge_layer4.1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.upsample_layer4.0.weight - torch.Size([3, 3, 3, 128, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.upsample_layer4.1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.upsample_layer4.1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer3.conv1.weight - torch.Size([3, 3, 3, 64, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer3.bn1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer3.bn1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer3.conv2.weight - torch.Size([3, 3, 3, 64, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer3.bn2.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer3.bn2.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.merge_layer3.0.weight - torch.Size([3, 3, 3, 128, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.merge_layer3.1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.merge_layer3.1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.upsample_layer3.0.weight - torch.Size([3, 3, 3, 64, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.upsample_layer3.1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.upsample_layer3.1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer2.conv1.weight - torch.Size([3, 3, 3, 64, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer2.bn1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer2.bn1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer2.conv2.weight - torch.Size([3, 3, 3, 64, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer2.bn2.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer2.bn2.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.merge_layer2.0.weight - torch.Size([3, 3, 3, 128, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.merge_layer2.1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.merge_layer2.1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.upsample_layer2.0.weight - torch.Size([3, 3, 3, 64, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.upsample_layer2.1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.upsample_layer2.1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer1.conv1.weight - torch.Size([3, 3, 3, 64, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer1.bn1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer1.bn1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer1.conv2.weight - torch.Size([3, 3, 3, 64, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer1.bn2.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.lateral_layer1.bn2.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.merge_layer1.0.weight - torch.Size([3, 3, 3, 128, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.merge_layer1.1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.merge_layer1.1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.upsample_layer1.0.weight - torch.Size([3, 3, 3, 64, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.upsample_layer1.1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+backbone.upsample_layer1.1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+segmentation_head.conv_seg.weight - torch.Size([3, 128]): 
+Initialized by user-defined `init_weights` in VoteSegHead  
+
+segmentation_head.conv_seg.bias - torch.Size([3]): 
+Initialized by user-defined `init_weights` in VoteSegHead  
+
+segmentation_head.pre_seg_conv.0.0.weight - torch.Size([128, 64]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+segmentation_head.pre_seg_conv.0.1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+segmentation_head.pre_seg_conv.0.1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+segmentation_head.pre_seg_conv.1.0.weight - torch.Size([128, 128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+segmentation_head.pre_seg_conv.1.1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+segmentation_head.pre_seg_conv.1.1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+segmentation_head.voting.weight - torch.Size([9, 128]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+
+segmentation_head.voting.bias - torch.Size([9]): 
+The value is the same before and after calling `init_weights` of VoteSegmentor  
+2025-02-21 15:59:38,319 - mmdet - INFO - Model:
+VoteSegmentor(
+  (voxel_layer): Voxelization(voxel_size=[0.16, 0.16, 0.24], point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2], max_num_points=-1, max_voxels=(-1, -1), deterministic=True)
+  (voxel_encoder): CustomDynamicScatterVFE(
+    (scatter): None
+    (vfe_layers): ModuleList(
+      (0): DynamicVFELayer(
+        (norm): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (linear): Linear(in_features=11, out_features=64, bias=False)
+      )
+      (1): DynamicVFELayer(
+        (norm): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (linear): Linear(in_features=128, out_features=64, bias=False)
+      )
+    )
+    (vfe_scatter): None
+    (cluster_scatter): None
+  )
+  (middle_encoder): PseudoMiddleEncoder()
+  (backbone): SimpleSparseUNet(
+    (conv_input): SparseSequential(
+      (0): SubMConv3d()
+      (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+    )
+    (encoder_layers): SparseSequential(
+      (encoder_layer1): SparseSequential(
+        (0): SparseSequential(
+          (0): SubMConv3d()
+          (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU(inplace=True)
+        )
+      )
+      (encoder_layer2): SparseSequential(
+        (0): SparseSequential(
+          (0): SparseConv3d()
+          (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU(inplace=True)
+        )
+        (1): SparseSequential(
+          (0): SubMConv3d()
+          (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU(inplace=True)
+        )
+        (2): SparseSequential(
+          (0): SubMConv3d()
+          (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU(inplace=True)
+        )
+      )
+      (encoder_layer3): SparseSequential(
+        (0): SparseSequential(
+          (0): SparseConv3d()
+          (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU(inplace=True)
+        )
+        (1): SparseSequential(
+          (0): SubMConv3d()
+          (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU(inplace=True)
+        )
+        (2): SparseSequential(
+          (0): SubMConv3d()
+          (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU(inplace=True)
+        )
+      )
+      (encoder_layer4): SparseSequential(
+        (0): SparseSequential(
+          (0): SparseConv3d()
+          (1): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU(inplace=True)
+        )
+        (1): SparseSequential(
+          (0): SubMConv3d()
+          (1): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU(inplace=True)
+        )
+        (2): SparseSequential(
+          (0): SubMConv3d()
+          (1): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU(inplace=True)
+        )
+      )
+      (encoder_layer5): SparseSequential(
+        (0): SparseSequential(
+          (0): SparseConv3d()
+          (1): BatchNorm1d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU(inplace=True)
+        )
+        (1): SparseSequential(
+          (0): SubMConv3d()
+          (1): BatchNorm1d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU(inplace=True)
+        )
+        (2): SparseSequential(
+          (0): SubMConv3d()
+          (1): BatchNorm1d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU(inplace=True)
+        )
+      )
+    )
+    (lateral_layer5): SparseBasicBlock(
+      (conv1): SubMConv3d()
+      (bn1): BatchNorm1d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (conv2): SubMConv3d()
+      (bn2): BatchNorm1d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+    (merge_layer5): SparseSequential(
+      (0): SubMConv3d()
+      (1): BatchNorm1d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+    )
+    (upsample_layer5): SparseSequential(
+      (0): SparseInverseConv3d()
+      (1): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+    )
+    (lateral_layer4): SparseBasicBlock(
+      (conv1): SubMConv3d()
+      (bn1): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (conv2): SubMConv3d()
+      (bn2): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+    (merge_layer4): SparseSequential(
+      (0): SubMConv3d()
+      (1): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+    )
+    (upsample_layer4): SparseSequential(
+      (0): SparseInverseConv3d()
+      (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+    )
+    (lateral_layer3): SparseBasicBlock(
+      (conv1): SubMConv3d()
+      (bn1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (conv2): SubMConv3d()
+      (bn2): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+    (merge_layer3): SparseSequential(
+      (0): SubMConv3d()
+      (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+    )
+    (upsample_layer3): SparseSequential(
+      (0): SparseInverseConv3d()
+      (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+    )
+    (lateral_layer2): SparseBasicBlock(
+      (conv1): SubMConv3d()
+      (bn1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (conv2): SubMConv3d()
+      (bn2): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+    (merge_layer2): SparseSequential(
+      (0): SubMConv3d()
+      (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+    )
+    (upsample_layer2): SparseSequential(
+      (0): SparseInverseConv3d()
+      (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+    )
+    (lateral_layer1): SparseBasicBlock(
+      (conv1): SubMConv3d()
+      (bn1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (conv2): SubMConv3d()
+      (bn2): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+    )
+    (merge_layer1): SparseSequential(
+      (0): SubMConv3d()
+      (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+    )
+    (upsample_layer1): SparseSequential(
+      (0): SubMConv3d()
+      (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (2): ReLU(inplace=True)
+    )
+    (conv_out): None
+  )
+  (segmentation_head): VoteSegHead(
+    (loss_decode): FocalLoss()
+    (conv_seg): Linear(in_features=128, out_features=3, bias=True)
+    (pre_seg_conv): Sequential(
+      (0): Sequential(
+        (0): Linear(in_features=64, out_features=128, bias=False)
+        (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+      )
+      (1): Sequential(
+        (0): Linear(in_features=128, out_features=128, bias=False)
+        (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+      )
+    )
+    (voting): Linear(in_features=128, out_features=9, bias=True)
+    (loss_vote): L1Loss()
+  )
+  (decode_neck): Voxel2PointScatterNeck()
+)
+2025-02-21 15:59:44,474 - mmdet - INFO - Start running, host: yq@amax, work_dir: /home/yq/LGDD/work_dirs/vod-unet_seg_pretrain_4x4_24e
+2025-02-21 15:59:44,474 - mmdet - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) CyclicLrUpdaterHook                
+(NORMAL      ) CheckpointHook                     
+(NORMAL      ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) CyclicLrUpdaterHook                
+(NORMAL      ) DistSamplerSeedHook                
+(NORMAL      ) DistEvalHook                       
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) CyclicLrUpdaterHook                
+(NORMAL      ) DistEvalHook                       
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_train_iter:
+(ABOVE_NORMAL) OptimizerHook                      
+(NORMAL      ) CheckpointHook                     
+(NORMAL      ) DistEvalHook                       
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) CheckpointHook                     
+(NORMAL      ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+before_val_epoch:
+(NORMAL      ) DistSamplerSeedHook                
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+before_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_epoch:
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+after_run:
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+2025-02-21 15:59:44,474 - mmdet - INFO - workflow: [('train', 1)], max: 24 epochs
+2025-02-21 15:59:44,475 - mmdet - INFO - Checkpoints will be saved to /home/yq/LGDD/work_dirs/vod-unet_seg_pretrain_4x4_24e by HardDiskBackend.
+2025-02-21 16:00:34,301 - mmdet - INFO - Epoch [1][50/322]	lr: 5.942e-05, eta: 2:07:23, time: 0.995, data_time: 0.790, memory: 563, loss_sem_seg: 0.0184, loss_vote: 0.6743, recall_Pedestrian: 0.9917, recall_Cyclist: 0.9700, recall_Car: 0.9750, loss: 0.6927, grad_norm: 6.7459
+2025-02-21 16:00:44,565 - mmdet - INFO - Epoch [1][100/322]	lr: 1.489e-04, eta: 1:16:19, time: 0.205, data_time: 0.008, memory: 563, loss_sem_seg: 0.0161, loss_vote: 0.5921, recall_Pedestrian: 0.9924, recall_Cyclist: 0.9840, recall_Car: 0.9838, loss: 0.6082, grad_norm: 2.8990
+2025-02-21 16:00:54,762 - mmdet - INFO - Epoch [1][150/322]	lr: 2.947e-04, eta: 0:59:08, time: 0.204, data_time: 0.008, memory: 563, loss_sem_seg: 0.0131, loss_vote: 0.4738, recall_Pedestrian: 0.9797, recall_Cyclist: 0.9665, recall_Car: 0.9918, loss: 0.4869, grad_norm: 2.0956
+2025-02-21 16:01:04,859 - mmdet - INFO - Epoch [1][200/322]	lr: 4.909e-04, eta: 0:50:23, time: 0.202, data_time: 0.008, memory: 564, loss_sem_seg: 0.0115, loss_vote: 0.4130, recall_Pedestrian: 0.9952, recall_Cyclist: 0.9696, recall_Car: 0.9864, loss: 0.4244, grad_norm: 1.3554
+2025-02-21 16:01:14,995 - mmdet - INFO - Epoch [1][250/322]	lr: 7.293e-04, eta: 0:45:06, time: 0.203, data_time: 0.009, memory: 564, loss_sem_seg: 0.0110, loss_vote: 0.3627, recall_Pedestrian: 0.9971, recall_Cyclist: 0.9805, recall_Car: 0.9692, loss: 0.3738, grad_norm: 1.2269
+2025-02-21 16:01:25,227 - mmdet - INFO - Epoch [1][300/322]	lr: 1.000e-03, eta: 0:41:33, time: 0.205, data_time: 0.009, memory: 564, loss_sem_seg: 0.0109, loss_vote: 0.3457, recall_Pedestrian: 0.9907, recall_Cyclist: 0.9719, recall_Car: 0.9935, loss: 0.3566, grad_norm: 0.9806
+2025-02-21 16:02:21,148 - mmdet - INFO - Epoch [2][50/322]	lr: 1.424e-03, eta: 0:49:11, time: 0.971, data_time: 0.738, memory: 564, loss_sem_seg: 0.0107, loss_vote: 0.3242, recall_Pedestrian: 0.9971, recall_Cyclist: 0.9977, recall_Car: 0.9888, loss: 0.3349, grad_norm: 0.7937
+2025-02-21 16:02:31,176 - mmdet - INFO - Epoch [2][100/322]	lr: 1.726e-03, eta: 0:45:57, time: 0.201, data_time: 0.009, memory: 564, loss_sem_seg: 0.0105, loss_vote: 0.3141, recall_Pedestrian: 0.9975, recall_Cyclist: 0.9821, recall_Car: 0.9723, loss: 0.3246, grad_norm: 0.7372
+2025-02-21 16:02:41,364 - mmdet - INFO - Epoch [2][150/322]	lr: 2.018e-03, eta: 0:43:25, time: 0.204, data_time: 0.008, memory: 564, loss_sem_seg: 0.0104, loss_vote: 0.3042, recall_Pedestrian: 0.9978, recall_Cyclist: 0.9819, recall_Car: 0.9891, loss: 0.3146, grad_norm: 0.6073
+2025-02-21 16:02:51,635 - mmdet - INFO - Epoch [2][200/322]	lr: 2.290e-03, eta: 0:41:21, time: 0.205, data_time: 0.008, memory: 564, loss_sem_seg: 0.0099, loss_vote: 0.2912, recall_Pedestrian: 0.9972, recall_Cyclist: 0.9606, recall_Car: 0.9801, loss: 0.3012, grad_norm: 0.5536
+2025-02-21 16:03:01,948 - mmdet - INFO - Epoch [2][250/322]	lr: 2.530e-03, eta: 0:39:37, time: 0.206, data_time: 0.009, memory: 564, loss_sem_seg: 0.0099, loss_vote: 0.2814, recall_Pedestrian: 0.9978, recall_Cyclist: 0.9634, recall_Car: 0.9851, loss: 0.2912, grad_norm: 0.5208
+2025-02-21 16:03:12,242 - mmdet - INFO - Epoch [2][300/322]	lr: 2.728e-03, eta: 0:38:08, time: 0.206, data_time: 0.009, memory: 564, loss_sem_seg: 0.0097, loss_vote: 0.2696, recall_Pedestrian: 0.9849, recall_Cyclist: 0.9759, recall_Car: 0.9829, loss: 0.2794, grad_norm: 0.5206
+2025-02-21 16:03:17,869 - mmdet - INFO - Saving checkpoint at 2 epochs
+2025-02-21 16:04:06,923 - mmdet - INFO - Epoch [3][50/322]	lr: 2.924e-03, eta: 0:42:02, time: 0.970, data_time: 0.776, memory: 564, loss_sem_seg: 0.0098, loss_vote: 0.2604, recall_Pedestrian: 0.9930, recall_Cyclist: 0.9591, recall_Car: 0.9710, loss: 0.2702, grad_norm: 0.4876
+2025-02-21 16:04:17,597 - mmdet - INFO - Epoch [3][100/322]	lr: 2.990e-03, eta: 0:40:36, time: 0.214, data_time: 0.009, memory: 564, loss_sem_seg: 0.0098, loss_vote: 0.2604, recall_Pedestrian: 0.9741, recall_Cyclist: 0.9565, recall_Car: 0.9691, loss: 0.2702, grad_norm: 0.4303
+2025-02-21 16:04:27,949 - mmdet - INFO - Epoch [3][150/322]	lr: 3.000e-03, eta: 0:39:16, time: 0.207, data_time: 0.009, memory: 564, loss_sem_seg: 0.0095, loss_vote: 0.2575, recall_Pedestrian: 0.9871, recall_Cyclist: 0.9722, recall_Car: 0.9755, loss: 0.2671, grad_norm: 0.4331
+2025-02-21 16:04:39,135 - mmdet - INFO - Epoch [3][200/322]	lr: 2.999e-03, eta: 0:38:12, time: 0.224, data_time: 0.009, memory: 564, loss_sem_seg: 0.0095, loss_vote: 0.2480, recall_Pedestrian: 0.9839, recall_Cyclist: 0.9548, recall_Car: 0.9750, loss: 0.2576, grad_norm: 0.4226
+2025-02-21 16:04:50,303 - mmdet - INFO - Epoch [3][250/322]	lr: 2.998e-03, eta: 0:37:13, time: 0.223, data_time: 0.009, memory: 564, loss_sem_seg: 0.0093, loss_vote: 0.2432, recall_Pedestrian: 0.9800, recall_Cyclist: 0.9709, recall_Car: 0.9656, loss: 0.2525, grad_norm: 0.3957
+2025-02-21 16:05:01,197 - mmdet - INFO - Epoch [3][300/322]	lr: 2.996e-03, eta: 0:36:18, time: 0.218, data_time: 0.008, memory: 564, loss_sem_seg: 0.0091, loss_vote: 0.2289, recall_Pedestrian: 0.9678, recall_Cyclist: 0.9422, recall_Car: 0.9765, loss: 0.2380, grad_norm: 0.3809
+2025-02-21 16:06:00,231 - mmdet - INFO - Epoch [4][50/322]	lr: 2.991e-03, eta: 0:39:12, time: 1.060, data_time: 0.770, memory: 564, loss_sem_seg: 0.0090, loss_vote: 0.2368, recall_Pedestrian: 0.9611, recall_Cyclist: 0.9528, recall_Car: 0.9645, loss: 0.2458, grad_norm: 0.3918
+2025-02-21 16:06:10,626 - mmdet - INFO - Epoch [4][100/322]	lr: 2.987e-03, eta: 0:38:10, time: 0.208, data_time: 0.006, memory: 564, loss_sem_seg: 0.0089, loss_vote: 0.2215, recall_Pedestrian: 0.9699, recall_Cyclist: 0.9417, recall_Car: 0.9850, loss: 0.2303, grad_norm: 0.4138
+2025-02-21 16:06:21,927 - mmdet - INFO - Epoch [4][150/322]	lr: 2.982e-03, eta: 0:37:18, time: 0.226, data_time: 0.008, memory: 564, loss_sem_seg: 0.0089, loss_vote: 0.2218, recall_Pedestrian: 0.9666, recall_Cyclist: 0.9476, recall_Car: 0.9658, loss: 0.2307, grad_norm: 0.3651
+2025-02-21 16:06:32,946 - mmdet - INFO - Epoch [4][200/322]	lr: 2.976e-03, eta: 0:36:28, time: 0.220, data_time: 0.009, memory: 564, loss_sem_seg: 0.0085, loss_vote: 0.2276, recall_Pedestrian: 0.9776, recall_Cyclist: 0.9441, recall_Car: 0.9506, loss: 0.2361, grad_norm: 0.4059
+2025-02-21 16:06:44,027 - mmdet - INFO - Epoch [4][250/322]	lr: 2.970e-03, eta: 0:35:41, time: 0.222, data_time: 0.009, memory: 564, loss_sem_seg: 0.0085, loss_vote: 0.2263, recall_Pedestrian: 0.9757, recall_Cyclist: 0.9580, recall_Car: 0.9487, loss: 0.2349, grad_norm: 0.3950
+2025-02-21 16:06:54,729 - mmdet - INFO - Epoch [4][300/322]	lr: 2.963e-03, eta: 0:34:55, time: 0.214, data_time: 0.008, memory: 564, loss_sem_seg: 0.0082, loss_vote: 0.2230, recall_Pedestrian: 0.9761, recall_Cyclist: 0.9535, recall_Car: 0.9427, loss: 0.2312, grad_norm: 0.3844
+2025-02-21 16:07:00,654 - mmdet - INFO - Saving checkpoint at 4 epochs
+2025-02-21 16:07:54,914 - mmdet - INFO - Epoch [5][50/322]	lr: 2.951e-03, eta: 0:36:57, time: 1.072, data_time: 0.814, memory: 564, loss_sem_seg: 0.0082, loss_vote: 0.2167, recall_Pedestrian: 0.9498, recall_Cyclist: 0.9267, recall_Car: 0.9355, loss: 0.2249, grad_norm: 0.3809
+2025-02-21 16:08:05,515 - mmdet - INFO - Epoch [5][100/322]	lr: 2.943e-03, eta: 0:36:08, time: 0.212, data_time: 0.009, memory: 564, loss_sem_seg: 0.0081, loss_vote: 0.2165, recall_Pedestrian: 0.9692, recall_Cyclist: 0.9685, recall_Car: 0.9504, loss: 0.2245, grad_norm: 0.3642
+2025-02-21 16:08:16,383 - mmdet - INFO - Epoch [5][150/322]	lr: 2.933e-03, eta: 0:35:24, time: 0.217, data_time: 0.009, memory: 564, loss_sem_seg: 0.0077, loss_vote: 0.2084, recall_Pedestrian: 0.9669, recall_Cyclist: 0.9682, recall_Car: 0.9621, loss: 0.2162, grad_norm: 0.3507
+2025-02-21 16:08:27,793 - mmdet - INFO - Epoch [5][200/322]	lr: 2.922e-03, eta: 0:34:44, time: 0.228, data_time: 0.008, memory: 564, loss_sem_seg: 0.0076, loss_vote: 0.2120, recall_Pedestrian: 0.9554, recall_Cyclist: 0.9379, recall_Car: 0.9445, loss: 0.2197, grad_norm: 0.3946
+2025-02-21 16:08:39,292 - mmdet - INFO - Epoch [5][250/322]	lr: 2.911e-03, eta: 0:34:07, time: 0.230, data_time: 0.008, memory: 564, loss_sem_seg: 0.0077, loss_vote: 0.2073, recall_Pedestrian: 0.9606, recall_Cyclist: 0.9369, recall_Car: 0.9648, loss: 0.2150, grad_norm: 0.3968
+2025-02-21 16:08:50,120 - mmdet - INFO - Epoch [5][300/322]	lr: 2.900e-03, eta: 0:33:28, time: 0.217, data_time: 0.007, memory: 564, loss_sem_seg: 0.0074, loss_vote: 0.1994, recall_Pedestrian: 0.9615, recall_Cyclist: 0.9288, recall_Car: 0.9388, loss: 0.2068, grad_norm: 0.3383
+2025-02-21 16:09:50,788 - mmdet - INFO - Epoch [6][50/322]	lr: 2.881e-03, eta: 0:34:59, time: 1.097, data_time: 0.751, memory: 564, loss_sem_seg: 0.0078, loss_vote: 0.2072, recall_Pedestrian: 0.9712, recall_Cyclist: 0.9357, recall_Car: 0.9543, loss: 0.2150, grad_norm: 0.4075
+2025-02-21 16:10:02,183 - mmdet - INFO - Epoch [6][100/322]	lr: 2.868e-03, eta: 0:34:21, time: 0.228, data_time: 0.010, memory: 564, loss_sem_seg: 0.0074, loss_vote: 0.2024, recall_Pedestrian: 0.9622, recall_Cyclist: 0.9457, recall_Car: 0.9430, loss: 0.2098, grad_norm: 0.3413
+2025-02-21 16:10:13,583 - mmdet - INFO - Epoch [6][150/322]	lr: 2.853e-03, eta: 0:33:44, time: 0.228, data_time: 0.009, memory: 564, loss_sem_seg: 0.0072, loss_vote: 0.1985, recall_Pedestrian: 0.9671, recall_Cyclist: 0.9513, recall_Car: 0.9621, loss: 0.2056, grad_norm: 0.3470
+2025-02-21 16:10:24,869 - mmdet - INFO - Epoch [6][200/322]	lr: 2.838e-03, eta: 0:33:09, time: 0.226, data_time: 0.008, memory: 564, loss_sem_seg: 0.0069, loss_vote: 0.2036, recall_Pedestrian: 0.9621, recall_Cyclist: 0.9431, recall_Car: 0.9270, loss: 0.2105, grad_norm: 0.3367
+2025-02-21 16:10:36,207 - mmdet - INFO - Epoch [6][250/322]	lr: 2.823e-03, eta: 0:32:35, time: 0.227, data_time: 0.008, memory: 564, loss_sem_seg: 0.0070, loss_vote: 0.2021, recall_Pedestrian: 0.9595, recall_Cyclist: 0.9432, recall_Car: 0.9441, loss: 0.2091, grad_norm: 0.3060
+2025-02-21 16:10:47,563 - mmdet - INFO - Epoch [6][300/322]	lr: 2.807e-03, eta: 0:32:02, time: 0.227, data_time: 0.009, memory: 564, loss_sem_seg: 0.0069, loss_vote: 0.1903, recall_Pedestrian: 0.9651, recall_Cyclist: 0.9390, recall_Car: 0.9626, loss: 0.1972, grad_norm: 0.3254
+2025-02-21 16:10:53,911 - mmdet - INFO - Saving checkpoint at 6 epochs
+2025-02-21 16:11:47,616 - mmdet - INFO - Epoch [7][50/322]	lr: 2.782e-03, eta: 0:33:03, time: 1.060, data_time: 0.752, memory: 564, loss_sem_seg: 0.0069, loss_vote: 0.1894, recall_Pedestrian: 0.9655, recall_Cyclist: 0.9395, recall_Car: 0.9458, loss: 0.1963, grad_norm: 0.3208
+2025-02-21 16:11:57,938 - mmdet - INFO - Epoch [7][100/322]	lr: 2.764e-03, eta: 0:32:26, time: 0.207, data_time: 0.008, memory: 564, loss_sem_seg: 0.0066, loss_vote: 0.1950, recall_Pedestrian: 0.9561, recall_Cyclist: 0.9504, recall_Car: 0.9461, loss: 0.2016, grad_norm: 0.3386
+2025-02-21 16:12:08,340 - mmdet - INFO - Epoch [7][150/322]	lr: 2.745e-03, eta: 0:31:51, time: 0.208, data_time: 0.008, memory: 564, loss_sem_seg: 0.0067, loss_vote: 0.1924, recall_Pedestrian: 0.9674, recall_Cyclist: 0.9351, recall_Car: 0.9476, loss: 0.1991, grad_norm: 0.3206
+2025-02-21 16:12:18,578 - mmdet - INFO - Epoch [7][200/322]	lr: 2.726e-03, eta: 0:31:16, time: 0.205, data_time: 0.007, memory: 564, loss_sem_seg: 0.0067, loss_vote: 0.1936, recall_Pedestrian: 0.9690, recall_Cyclist: 0.9325, recall_Car: 0.9439, loss: 0.2003, grad_norm: 0.3336
+2025-02-21 16:12:29,139 - mmdet - INFO - Epoch [7][250/322]	lr: 2.706e-03, eta: 0:30:44, time: 0.211, data_time: 0.007, memory: 564, loss_sem_seg: 0.0066, loss_vote: 0.1935, recall_Pedestrian: 0.9609, recall_Cyclist: 0.9457, recall_Car: 0.9383, loss: 0.2001, grad_norm: 0.3552
+2025-02-21 16:12:39,942 - mmdet - INFO - Epoch [7][300/322]	lr: 2.686e-03, eta: 0:30:13, time: 0.216, data_time: 0.009, memory: 564, loss_sem_seg: 0.0066, loss_vote: 0.1900, recall_Pedestrian: 0.9644, recall_Cyclist: 0.9345, recall_Car: 0.9411, loss: 0.1966, grad_norm: 0.3250
+2025-02-21 16:13:41,037 - mmdet - INFO - Epoch [8][50/322]	lr: 2.655e-03, eta: 0:31:04, time: 1.109, data_time: 0.774, memory: 564, loss_sem_seg: 0.0064, loss_vote: 0.1836, recall_Pedestrian: 0.9652, recall_Cyclist: 0.9273, recall_Car: 0.9624, loss: 0.1899, grad_norm: 0.3195
+2025-02-21 16:13:51,805 - mmdet - INFO - Epoch [8][100/322]	lr: 2.634e-03, eta: 0:30:32, time: 0.215, data_time: 0.009, memory: 565, loss_sem_seg: 0.0065, loss_vote: 0.1877, recall_Pedestrian: 0.9572, recall_Cyclist: 0.9221, recall_Car: 0.9211, loss: 0.1942, grad_norm: 0.3425
+2025-02-21 16:14:02,679 - mmdet - INFO - Epoch [8][150/322]	lr: 2.611e-03, eta: 0:30:01, time: 0.218, data_time: 0.009, memory: 565, loss_sem_seg: 0.0064, loss_vote: 0.1837, recall_Pedestrian: 0.9655, recall_Cyclist: 0.9500, recall_Car: 0.9567, loss: 0.1901, grad_norm: 0.3193
+2025-02-21 16:14:13,690 - mmdet - INFO - Epoch [8][200/322]	lr: 2.588e-03, eta: 0:29:31, time: 0.220, data_time: 0.008, memory: 565, loss_sem_seg: 0.0062, loss_vote: 0.1802, recall_Pedestrian: 0.9634, recall_Cyclist: 0.9334, recall_Car: 0.9568, loss: 0.1864, grad_norm: 0.3395
+2025-02-21 16:14:25,049 - mmdet - INFO - Epoch [8][250/322]	lr: 2.564e-03, eta: 0:29:03, time: 0.227, data_time: 0.008, memory: 565, loss_sem_seg: 0.0062, loss_vote: 0.1800, recall_Pedestrian: 0.9605, recall_Cyclist: 0.9492, recall_Car: 0.9477, loss: 0.1862, grad_norm: 0.3019
+2025-02-21 16:14:36,224 - mmdet - INFO - Epoch [8][300/322]	lr: 2.540e-03, eta: 0:28:35, time: 0.223, data_time: 0.008, memory: 565, loss_sem_seg: 0.0062, loss_vote: 0.1806, recall_Pedestrian: 0.9636, recall_Cyclist: 0.9510, recall_Car: 0.9417, loss: 0.1868, grad_norm: 0.2852
+2025-02-21 16:14:41,886 - mmdet - INFO - Saving checkpoint at 8 epochs
+2025-02-21 16:15:33,531 - mmdet - INFO - Epoch [9][50/322]	lr: 2.505e-03, eta: 0:29:04, time: 1.020, data_time: 0.770, memory: 565, loss_sem_seg: 0.0060, loss_vote: 0.1812, recall_Pedestrian: 0.9500, recall_Cyclist: 0.9637, recall_Car: 0.9489, loss: 0.1872, grad_norm: 0.3241
+2025-02-21 16:15:44,774 - mmdet - INFO - Epoch [9][100/322]	lr: 2.479e-03, eta: 0:28:36, time: 0.225, data_time: 0.009, memory: 565, loss_sem_seg: 0.0060, loss_vote: 0.1749, recall_Pedestrian: 0.9648, recall_Cyclist: 0.9563, recall_Car: 0.9467, loss: 0.1809, grad_norm: 0.2973
+2025-02-21 16:15:56,124 - mmdet - INFO - Epoch [9][150/322]	lr: 2.453e-03, eta: 0:28:09, time: 0.227, data_time: 0.010, memory: 565, loss_sem_seg: 0.0061, loss_vote: 0.1823, recall_Pedestrian: 0.9531, recall_Cyclist: 0.9348, recall_Car: 0.9545, loss: 0.1883, grad_norm: 0.3281
+2025-02-21 16:16:07,483 - mmdet - INFO - Epoch [9][200/322]	lr: 2.427e-03, eta: 0:27:42, time: 0.227, data_time: 0.009, memory: 565, loss_sem_seg: 0.0061, loss_vote: 0.1778, recall_Pedestrian: 0.9608, recall_Cyclist: 0.9406, recall_Car: 0.9343, loss: 0.1839, grad_norm: 0.3055
+2025-02-21 16:16:18,322 - mmdet - INFO - Epoch [9][250/322]	lr: 2.400e-03, eta: 0:27:15, time: 0.217, data_time: 0.007, memory: 565, loss_sem_seg: 0.0057, loss_vote: 0.1703, recall_Pedestrian: 0.9621, recall_Cyclist: 0.9406, recall_Car: 0.9575, loss: 0.1760, grad_norm: 0.3051
+2025-02-21 16:16:29,313 - mmdet - INFO - Epoch [9][300/322]	lr: 2.373e-03, eta: 0:26:49, time: 0.220, data_time: 0.009, memory: 565, loss_sem_seg: 0.0058, loss_vote: 0.1765, recall_Pedestrian: 0.9575, recall_Cyclist: 0.9481, recall_Car: 0.9259, loss: 0.1823, grad_norm: 0.2950
+2025-02-21 16:17:28,624 - mmdet - INFO - Epoch [10][50/322]	lr: 2.333e-03, eta: 0:27:12, time: 1.061, data_time: 0.807, memory: 565, loss_sem_seg: 0.0058, loss_vote: 0.1646, recall_Pedestrian: 0.9625, recall_Cyclist: 0.9367, recall_Car: 0.9521, loss: 0.1704, grad_norm: 0.2843
+2025-02-21 16:17:39,719 - mmdet - INFO - Epoch [10][100/322]	lr: 2.304e-03, eta: 0:26:45, time: 0.222, data_time: 0.009, memory: 565, loss_sem_seg: 0.0058, loss_vote: 0.1714, recall_Pedestrian: 0.9548, recall_Cyclist: 0.9505, recall_Car: 0.9486, loss: 0.1772, grad_norm: 0.2932
+2025-02-21 16:17:50,647 - mmdet - INFO - Epoch [10][150/322]	lr: 2.275e-03, eta: 0:26:19, time: 0.219, data_time: 0.009, memory: 565, loss_sem_seg: 0.0058, loss_vote: 0.1728, recall_Pedestrian: 0.9571, recall_Cyclist: 0.9376, recall_Car: 0.9350, loss: 0.1786, grad_norm: 0.3195
+2025-02-21 16:18:00,994 - mmdet - INFO - Epoch [10][200/322]	lr: 2.246e-03, eta: 0:25:53, time: 0.207, data_time: 0.007, memory: 565, loss_sem_seg: 0.0055, loss_vote: 0.1678, recall_Pedestrian: 0.9604, recall_Cyclist: 0.9369, recall_Car: 0.9346, loss: 0.1733, grad_norm: 0.2808
+2025-02-21 16:18:11,706 - mmdet - INFO - Epoch [10][250/322]	lr: 2.217e-03, eta: 0:25:27, time: 0.214, data_time: 0.008, memory: 565, loss_sem_seg: 0.0055, loss_vote: 0.1705, recall_Pedestrian: 0.9591, recall_Cyclist: 0.9492, recall_Car: 0.9415, loss: 0.1760, grad_norm: 0.3139
+2025-02-21 16:18:22,714 - mmdet - INFO - Epoch [10][300/322]	lr: 2.187e-03, eta: 0:25:02, time: 0.220, data_time: 0.009, memory: 565, loss_sem_seg: 0.0056, loss_vote: 0.1707, recall_Pedestrian: 0.9465, recall_Cyclist: 0.9320, recall_Car: 0.9389, loss: 0.1762, grad_norm: 0.3096
+2025-02-21 16:18:28,673 - mmdet - INFO - Saving checkpoint at 10 epochs
+2025-02-21 16:19:23,294 - mmdet - INFO - Epoch [11][50/322]	lr: 2.143e-03, eta: 0:25:20, time: 1.084, data_time: 0.782, memory: 565, loss_sem_seg: 0.0055, loss_vote: 0.1636, recall_Pedestrian: 0.9591, recall_Cyclist: 0.9741, recall_Car: 0.9634, loss: 0.1690, grad_norm: 0.3101
+2025-02-21 16:19:34,052 - mmdet - INFO - Epoch [11][100/322]	lr: 2.112e-03, eta: 0:24:54, time: 0.215, data_time: 0.008, memory: 565, loss_sem_seg: 0.0055, loss_vote: 0.1710, recall_Pedestrian: 0.9584, recall_Cyclist: 0.9269, recall_Car: 0.9310, loss: 0.1765, grad_norm: 0.3026
+2025-02-21 16:19:44,709 - mmdet - INFO - Epoch [11][150/322]	lr: 2.081e-03, eta: 0:24:29, time: 0.213, data_time: 0.008, memory: 565, loss_sem_seg: 0.0054, loss_vote: 0.1611, recall_Pedestrian: 0.9516, recall_Cyclist: 0.9446, recall_Car: 0.9393, loss: 0.1664, grad_norm: 0.2898
+2025-02-21 16:19:55,502 - mmdet - INFO - Epoch [11][200/322]	lr: 2.050e-03, eta: 0:24:05, time: 0.216, data_time: 0.009, memory: 565, loss_sem_seg: 0.0053, loss_vote: 0.1566, recall_Pedestrian: 0.9612, recall_Cyclist: 0.9244, recall_Car: 0.9620, loss: 0.1619, grad_norm: 0.3042
+2025-02-21 16:20:06,397 - mmdet - INFO - Epoch [11][250/322]	lr: 2.018e-03, eta: 0:23:41, time: 0.218, data_time: 0.008, memory: 565, loss_sem_seg: 0.0053, loss_vote: 0.1630, recall_Pedestrian: 0.9497, recall_Cyclist: 0.9440, recall_Car: 0.9632, loss: 0.1684, grad_norm: 0.2863
+2025-02-21 16:20:16,881 - mmdet - INFO - Epoch [11][300/322]	lr: 1.986e-03, eta: 0:23:17, time: 0.210, data_time: 0.008, memory: 565, loss_sem_seg: 0.0053, loss_vote: 0.1619, recall_Pedestrian: 0.9701, recall_Cyclist: 0.9256, recall_Car: 0.9486, loss: 0.1672, grad_norm: 0.2902
+2025-02-21 16:21:15,304 - mmdet - INFO - Epoch [12][50/322]	lr: 1.940e-03, eta: 0:23:26, time: 1.049, data_time: 0.820, memory: 565, loss_sem_seg: 0.0051, loss_vote: 0.1598, recall_Pedestrian: 0.9605, recall_Cyclist: 0.9343, recall_Car: 0.9449, loss: 0.1649, grad_norm: 0.2817
+2025-02-21 16:21:26,116 - mmdet - INFO - Epoch [12][100/322]	lr: 1.907e-03, eta: 0:23:02, time: 0.216, data_time: 0.008, memory: 565, loss_sem_seg: 0.0052, loss_vote: 0.1609, recall_Pedestrian: 0.9499, recall_Cyclist: 0.9400, recall_Car: 0.9437, loss: 0.1661, grad_norm: 0.3168
+2025-02-21 16:21:36,809 - mmdet - INFO - Epoch [12][150/322]	lr: 1.875e-03, eta: 0:22:38, time: 0.214, data_time: 0.009, memory: 565, loss_sem_seg: 0.0053, loss_vote: 0.1600, recall_Pedestrian: 0.9632, recall_Cyclist: 0.9435, recall_Car: 0.9386, loss: 0.1653, grad_norm: 0.3333
+2025-02-21 16:21:47,336 - mmdet - INFO - Epoch [12][200/322]	lr: 1.842e-03, eta: 0:22:14, time: 0.211, data_time: 0.008, memory: 565, loss_sem_seg: 0.0052, loss_vote: 0.1562, recall_Pedestrian: 0.9544, recall_Cyclist: 0.9194, recall_Car: 0.9439, loss: 0.1613, grad_norm: 0.2974
+2025-02-21 16:21:58,315 - mmdet - INFO - Epoch [12][250/322]	lr: 1.809e-03, eta: 0:21:52, time: 0.220, data_time: 0.009, memory: 565, loss_sem_seg: 0.0053, loss_vote: 0.1594, recall_Pedestrian: 0.9539, recall_Cyclist: 0.9458, recall_Car: 0.9499, loss: 0.1647, grad_norm: 0.2921
+2025-02-21 16:22:08,946 - mmdet - INFO - Epoch [12][300/322]	lr: 1.776e-03, eta: 0:21:29, time: 0.212, data_time: 0.008, memory: 565, loss_sem_seg: 0.0052, loss_vote: 0.1546, recall_Pedestrian: 0.9571, recall_Cyclist: 0.9559, recall_Car: 0.9649, loss: 0.1598, grad_norm: 0.2852
+2025-02-21 16:22:14,924 - mmdet - INFO - Saving checkpoint at 12 epochs
+2025-02-21 16:23:07,788 - mmdet - INFO - Epoch [13][50/322]	lr: 1.727e-03, eta: 0:21:32, time: 1.042, data_time: 0.793, memory: 565, loss_sem_seg: 0.0049, loss_vote: 0.1512, recall_Pedestrian: 0.9560, recall_Cyclist: 0.9337, recall_Car: 0.9345, loss: 0.1562, grad_norm: 0.2968
+2025-02-21 16:23:19,148 - mmdet - INFO - Epoch [13][100/322]	lr: 1.694e-03, eta: 0:21:10, time: 0.227, data_time: 0.010, memory: 565, loss_sem_seg: 0.0050, loss_vote: 0.1516, recall_Pedestrian: 0.9585, recall_Cyclist: 0.9321, recall_Car: 0.9449, loss: 0.1566, grad_norm: 0.2868
+2025-02-21 16:23:30,568 - mmdet - INFO - Epoch [13][150/322]	lr: 1.660e-03, eta: 0:20:48, time: 0.228, data_time: 0.009, memory: 565, loss_sem_seg: 0.0051, loss_vote: 0.1491, recall_Pedestrian: 0.9559, recall_Cyclist: 0.9451, recall_Car: 0.9562, loss: 0.1542, grad_norm: 0.2928
+2025-02-21 16:23:41,373 - mmdet - INFO - Epoch [13][200/322]	lr: 1.627e-03, eta: 0:20:26, time: 0.216, data_time: 0.008, memory: 565, loss_sem_seg: 0.0051, loss_vote: 0.1540, recall_Pedestrian: 0.9515, recall_Cyclist: 0.9426, recall_Car: 0.9531, loss: 0.1591, grad_norm: 0.2840
+2025-02-21 16:23:51,846 - mmdet - INFO - Epoch [13][250/322]	lr: 1.593e-03, eta: 0:20:04, time: 0.209, data_time: 0.008, memory: 565, loss_sem_seg: 0.0048, loss_vote: 0.1507, recall_Pedestrian: 0.9653, recall_Cyclist: 0.9356, recall_Car: 0.9297, loss: 0.1555, grad_norm: 0.2746
+2025-02-21 16:24:02,217 - mmdet - INFO - Epoch [13][300/322]	lr: 1.559e-03, eta: 0:19:42, time: 0.208, data_time: 0.007, memory: 565, loss_sem_seg: 0.0049, loss_vote: 0.1470, recall_Pedestrian: 0.9617, recall_Cyclist: 0.9443, recall_Car: 0.9452, loss: 0.1519, grad_norm: 0.2686
+2025-02-21 16:25:00,603 - mmdet - INFO - Epoch [14][50/322]	lr: 1.510e-03, eta: 0:19:41, time: 1.047, data_time: 0.775, memory: 565, loss_sem_seg: 0.0048, loss_vote: 0.1446, recall_Pedestrian: 0.9576, recall_Cyclist: 0.9371, recall_Car: 0.9665, loss: 0.1494, grad_norm: 0.2792
+2025-02-21 16:25:11,665 - mmdet - INFO - Epoch [14][100/322]	lr: 1.476e-03, eta: 0:19:20, time: 0.221, data_time: 0.008, memory: 565, loss_sem_seg: 0.0047, loss_vote: 0.1485, recall_Pedestrian: 0.9525, recall_Cyclist: 0.9347, recall_Car: 0.9616, loss: 0.1532, grad_norm: 0.2910
+2025-02-21 16:25:22,488 - mmdet - INFO - Epoch [14][150/322]	lr: 1.442e-03, eta: 0:18:58, time: 0.216, data_time: 0.008, memory: 565, loss_sem_seg: 0.0047, loss_vote: 0.1451, recall_Pedestrian: 0.9635, recall_Cyclist: 0.9620, recall_Car: 0.9502, loss: 0.1499, grad_norm: 0.2837
+2025-02-21 16:25:32,639 - mmdet - INFO - Epoch [14][200/322]	lr: 1.409e-03, eta: 0:18:36, time: 0.203, data_time: 0.007, memory: 565, loss_sem_seg: 0.0047, loss_vote: 0.1466, recall_Pedestrian: 0.9487, recall_Cyclist: 0.9549, recall_Car: 0.9556, loss: 0.1513, grad_norm: 0.2702
+2025-02-21 16:25:42,847 - mmdet - INFO - Epoch [14][250/322]	lr: 1.375e-03, eta: 0:18:15, time: 0.204, data_time: 0.007, memory: 565, loss_sem_seg: 0.0049, loss_vote: 0.1440, recall_Pedestrian: 0.9622, recall_Cyclist: 0.9336, recall_Car: 0.9247, loss: 0.1490, grad_norm: 0.2763
+2025-02-21 16:25:53,494 - mmdet - INFO - Epoch [14][300/322]	lr: 1.341e-03, eta: 0:17:54, time: 0.213, data_time: 0.008, memory: 565, loss_sem_seg: 0.0048, loss_vote: 0.1485, recall_Pedestrian: 0.9627, recall_Cyclist: 0.9671, recall_Car: 0.9205, loss: 0.1532, grad_norm: 0.2920
+2025-02-21 16:25:59,223 - mmdet - INFO - Saving checkpoint at 14 epochs
+2025-02-21 16:26:51,025 - mmdet - INFO - Epoch [15][50/322]	lr: 1.293e-03, eta: 0:17:49, time: 1.027, data_time: 0.788, memory: 565, loss_sem_seg: 0.0047, loss_vote: 0.1419, recall_Pedestrian: 0.9482, recall_Cyclist: 0.9391, recall_Car: 0.9472, loss: 0.1466, grad_norm: 0.2784
+2025-02-21 16:27:01,435 - mmdet - INFO - Epoch [15][100/322]	lr: 1.259e-03, eta: 0:17:28, time: 0.208, data_time: 0.009, memory: 565, loss_sem_seg: 0.0048, loss_vote: 0.1507, recall_Pedestrian: 0.9606, recall_Cyclist: 0.9391, recall_Car: 0.9456, loss: 0.1555, grad_norm: 0.3079
+2025-02-21 16:27:11,874 - mmdet - INFO - Epoch [15][150/322]	lr: 1.226e-03, eta: 0:17:07, time: 0.209, data_time: 0.008, memory: 565, loss_sem_seg: 0.0047, loss_vote: 0.1381, recall_Pedestrian: 0.9550, recall_Cyclist: 0.9502, recall_Car: 0.9650, loss: 0.1428, grad_norm: 0.2602
+2025-02-21 16:27:22,623 - mmdet - INFO - Epoch [15][200/322]	lr: 1.193e-03, eta: 0:16:46, time: 0.215, data_time: 0.008, memory: 565, loss_sem_seg: 0.0048, loss_vote: 0.1395, recall_Pedestrian: 0.9533, recall_Cyclist: 0.9363, recall_Car: 0.9571, loss: 0.1442, grad_norm: 0.2603
+2025-02-21 16:27:33,484 - mmdet - INFO - Epoch [15][250/322]	lr: 1.160e-03, eta: 0:16:26, time: 0.217, data_time: 0.009, memory: 565, loss_sem_seg: 0.0045, loss_vote: 0.1390, recall_Pedestrian: 0.9582, recall_Cyclist: 0.9451, recall_Car: 0.9532, loss: 0.1435, grad_norm: 0.2726
+2025-02-21 16:27:44,448 - mmdet - INFO - Epoch [15][300/322]	lr: 1.127e-03, eta: 0:16:06, time: 0.219, data_time: 0.009, memory: 565, loss_sem_seg: 0.0045, loss_vote: 0.1390, recall_Pedestrian: 0.9393, recall_Cyclist: 0.9278, recall_Car: 0.9576, loss: 0.1435, grad_norm: 0.2631
+2025-02-21 16:28:41,825 - mmdet - INFO - Epoch [16][50/322]	lr: 1.080e-03, eta: 0:15:58, time: 1.029, data_time: 0.778, memory: 565, loss_sem_seg: 0.0045, loss_vote: 0.1342, recall_Pedestrian: 0.9592, recall_Cyclist: 0.9115, recall_Car: 0.9639, loss: 0.1387, grad_norm: 0.2851
+2025-02-21 16:28:52,385 - mmdet - INFO - Epoch [16][100/322]	lr: 1.047e-03, eta: 0:15:38, time: 0.211, data_time: 0.008, memory: 565, loss_sem_seg: 0.0046, loss_vote: 0.1394, recall_Pedestrian: 0.9643, recall_Cyclist: 0.9657, recall_Car: 0.9418, loss: 0.1439, grad_norm: 0.2833
+2025-02-21 16:29:03,276 - mmdet - INFO - Epoch [16][150/322]	lr: 1.015e-03, eta: 0:15:18, time: 0.218, data_time: 0.008, memory: 565, loss_sem_seg: 0.0043, loss_vote: 0.1342, recall_Pedestrian: 0.9638, recall_Cyclist: 0.9678, recall_Car: 0.9622, loss: 0.1386, grad_norm: 0.2756
+2025-02-21 16:29:13,496 - mmdet - INFO - Epoch [16][200/322]	lr: 9.831e-04, eta: 0:14:58, time: 0.204, data_time: 0.007, memory: 565, loss_sem_seg: 0.0044, loss_vote: 0.1385, recall_Pedestrian: 0.9570, recall_Cyclist: 0.9356, recall_Car: 0.9634, loss: 0.1429, grad_norm: 0.2744
+2025-02-21 16:29:23,715 - mmdet - INFO - Epoch [16][250/322]	lr: 9.514e-04, eta: 0:14:38, time: 0.204, data_time: 0.006, memory: 565, loss_sem_seg: 0.0045, loss_vote: 0.1363, recall_Pedestrian: 0.9510, recall_Cyclist: 0.9460, recall_Car: 0.9523, loss: 0.1408, grad_norm: 0.2883
+2025-02-21 16:29:34,051 - mmdet - INFO - Epoch [16][300/322]	lr: 9.201e-04, eta: 0:14:18, time: 0.207, data_time: 0.006, memory: 565, loss_sem_seg: 0.0045, loss_vote: 0.1332, recall_Pedestrian: 0.9615, recall_Cyclist: 0.9545, recall_Car: 0.9434, loss: 0.1376, grad_norm: 0.2646
+2025-02-21 16:29:40,207 - mmdet - INFO - Saving checkpoint at 16 epochs
+2025-02-21 16:30:31,713 - mmdet - INFO - Epoch [17][50/322]	lr: 8.754e-04, eta: 0:14:07, time: 1.017, data_time: 0.778, memory: 565, loss_sem_seg: 0.0044, loss_vote: 0.1312, recall_Pedestrian: 0.9571, recall_Cyclist: 0.9582, recall_Car: 0.9687, loss: 0.1356, grad_norm: 0.2531
+2025-02-21 16:30:42,176 - mmdet - INFO - Epoch [17][100/322]	lr: 8.448e-04, eta: 0:13:48, time: 0.209, data_time: 0.009, memory: 565, loss_sem_seg: 0.0041, loss_vote: 0.1296, recall_Pedestrian: 0.9520, recall_Cyclist: 0.9517, recall_Car: 0.9611, loss: 0.1337, grad_norm: 0.2658
+2025-02-21 16:30:53,108 - mmdet - INFO - Epoch [17][150/322]	lr: 8.145e-04, eta: 0:13:28, time: 0.219, data_time: 0.009, memory: 565, loss_sem_seg: 0.0041, loss_vote: 0.1334, recall_Pedestrian: 0.9606, recall_Cyclist: 0.9313, recall_Car: 0.9523, loss: 0.1375, grad_norm: 0.2659
+2025-02-21 16:31:03,641 - mmdet - INFO - Epoch [17][200/322]	lr: 7.845e-04, eta: 0:13:09, time: 0.211, data_time: 0.009, memory: 565, loss_sem_seg: 0.0044, loss_vote: 0.1286, recall_Pedestrian: 0.9616, recall_Cyclist: 0.9507, recall_Car: 0.9692, loss: 0.1330, grad_norm: 0.2747
+2025-02-21 16:31:13,592 - mmdet - INFO - Epoch [17][250/322]	lr: 7.549e-04, eta: 0:12:49, time: 0.199, data_time: 0.007, memory: 565, loss_sem_seg: 0.0042, loss_vote: 0.1306, recall_Pedestrian: 0.9599, recall_Cyclist: 0.9402, recall_Car: 0.9494, loss: 0.1348, grad_norm: 0.2755
+2025-02-21 16:31:23,816 - mmdet - INFO - Epoch [17][300/322]	lr: 7.257e-04, eta: 0:12:30, time: 0.205, data_time: 0.007, memory: 565, loss_sem_seg: 0.0041, loss_vote: 0.1280, recall_Pedestrian: 0.9523, recall_Cyclist: 0.9722, recall_Car: 0.9621, loss: 0.1321, grad_norm: 0.2707
+2025-02-21 16:32:19,730 - mmdet - INFO - Epoch [18][50/322]	lr: 6.844e-04, eta: 0:12:17, time: 1.002, data_time: 0.738, memory: 565, loss_sem_seg: 0.0041, loss_vote: 0.1270, recall_Pedestrian: 0.9364, recall_Cyclist: 0.9445, recall_Car: 0.9492, loss: 0.1310, grad_norm: 0.2614
+2025-02-21 16:32:30,520 - mmdet - INFO - Epoch [18][100/322]	lr: 6.561e-04, eta: 0:11:58, time: 0.216, data_time: 0.009, memory: 565, loss_sem_seg: 0.0041, loss_vote: 0.1222, recall_Pedestrian: 0.9609, recall_Cyclist: 0.9475, recall_Car: 0.9479, loss: 0.1263, grad_norm: 0.2531
+2025-02-21 16:32:41,869 - mmdet - INFO - Epoch [18][150/322]	lr: 6.284e-04, eta: 0:11:39, time: 0.227, data_time: 0.009, memory: 565, loss_sem_seg: 0.0042, loss_vote: 0.1249, recall_Pedestrian: 0.9672, recall_Cyclist: 0.9525, recall_Car: 0.9652, loss: 0.1291, grad_norm: 0.2483
+2025-02-21 16:32:52,740 - mmdet - INFO - Epoch [18][200/322]	lr: 6.010e-04, eta: 0:11:20, time: 0.217, data_time: 0.008, memory: 565, loss_sem_seg: 0.0041, loss_vote: 0.1226, recall_Pedestrian: 0.9648, recall_Cyclist: 0.9131, recall_Car: 0.9600, loss: 0.1267, grad_norm: 0.2427
+2025-02-21 16:33:02,941 - mmdet - INFO - Epoch [18][250/322]	lr: 5.741e-04, eta: 0:11:02, time: 0.204, data_time: 0.008, memory: 565, loss_sem_seg: 0.0040, loss_vote: 0.1231, recall_Pedestrian: 0.9666, recall_Cyclist: 0.9248, recall_Car: 0.9534, loss: 0.1272, grad_norm: 0.2607
+2025-02-21 16:33:13,652 - mmdet - INFO - Epoch [18][300/322]	lr: 5.477e-04, eta: 0:10:43, time: 0.214, data_time: 0.009, memory: 565, loss_sem_seg: 0.0041, loss_vote: 0.1257, recall_Pedestrian: 0.9512, recall_Cyclist: 0.9453, recall_Car: 0.9596, loss: 0.1297, grad_norm: 0.2400
+2025-02-21 16:33:19,496 - mmdet - INFO - Saving checkpoint at 18 epochs
+2025-02-21 16:34:11,561 - mmdet - INFO - Epoch [19][50/322]	lr: 5.105e-04, eta: 0:10:28, time: 1.033, data_time: 0.808, memory: 565, loss_sem_seg: 0.0040, loss_vote: 0.1213, recall_Pedestrian: 0.9498, recall_Cyclist: 0.9368, recall_Car: 0.9605, loss: 0.1254, grad_norm: 0.2701
+2025-02-21 16:34:21,717 - mmdet - INFO - Epoch [19][100/322]	lr: 4.853e-04, eta: 0:10:10, time: 0.203, data_time: 0.007, memory: 565, loss_sem_seg: 0.0040, loss_vote: 0.1190, recall_Pedestrian: 0.9605, recall_Cyclist: 0.9443, recall_Car: 0.9728, loss: 0.1229, grad_norm: 0.2655
+2025-02-21 16:34:32,067 - mmdet - INFO - Epoch [19][150/322]	lr: 4.607e-04, eta: 0:09:51, time: 0.207, data_time: 0.008, memory: 565, loss_sem_seg: 0.0039, loss_vote: 0.1209, recall_Pedestrian: 0.9701, recall_Cyclist: 0.9437, recall_Car: 0.9399, loss: 0.1248, grad_norm: 0.2488
+2025-02-21 16:34:42,942 - mmdet - INFO - Epoch [19][200/322]	lr: 4.365e-04, eta: 0:09:33, time: 0.217, data_time: 0.008, memory: 565, loss_sem_seg: 0.0038, loss_vote: 0.1195, recall_Pedestrian: 0.9484, recall_Cyclist: 0.9513, recall_Car: 0.9647, loss: 0.1233, grad_norm: 0.2613
+2025-02-21 16:34:53,624 - mmdet - INFO - Epoch [19][250/322]	lr: 4.129e-04, eta: 0:09:15, time: 0.214, data_time: 0.008, memory: 565, loss_sem_seg: 0.0039, loss_vote: 0.1191, recall_Pedestrian: 0.9577, recall_Cyclist: 0.9439, recall_Car: 0.9390, loss: 0.1231, grad_norm: 0.2520
+2025-02-21 16:35:04,582 - mmdet - INFO - Epoch [19][300/322]	lr: 3.898e-04, eta: 0:08:57, time: 0.219, data_time: 0.010, memory: 565, loss_sem_seg: 0.0039, loss_vote: 0.1162, recall_Pedestrian: 0.9631, recall_Cyclist: 0.9440, recall_Car: 0.9736, loss: 0.1201, grad_norm: 0.2431
+2025-02-21 16:36:00,912 - mmdet - INFO - Epoch [20][50/322]	lr: 3.576e-04, eta: 0:08:40, time: 1.010, data_time: 0.775, memory: 565, loss_sem_seg: 0.0039, loss_vote: 0.1170, recall_Pedestrian: 0.9650, recall_Cyclist: 0.9458, recall_Car: 0.9664, loss: 0.1209, grad_norm: 0.2675
+2025-02-21 16:36:11,594 - mmdet - INFO - Epoch [20][100/322]	lr: 3.360e-04, eta: 0:08:22, time: 0.213, data_time: 0.008, memory: 565, loss_sem_seg: 0.0039, loss_vote: 0.1143, recall_Pedestrian: 0.9624, recall_Cyclist: 0.9625, recall_Car: 0.9626, loss: 0.1182, grad_norm: 0.2438
+2025-02-21 16:36:22,655 - mmdet - INFO - Epoch [20][150/322]	lr: 3.149e-04, eta: 0:08:04, time: 0.221, data_time: 0.008, memory: 565, loss_sem_seg: 0.0038, loss_vote: 0.1154, recall_Pedestrian: 0.9689, recall_Cyclist: 0.9187, recall_Car: 0.9493, loss: 0.1192, grad_norm: 0.2418
+2025-02-21 16:36:33,761 - mmdet - INFO - Epoch [20][200/322]	lr: 2.944e-04, eta: 0:07:46, time: 0.222, data_time: 0.009, memory: 565, loss_sem_seg: 0.0039, loss_vote: 0.1154, recall_Pedestrian: 0.9610, recall_Cyclist: 0.9515, recall_Car: 0.9614, loss: 0.1193, grad_norm: 0.2444
+2025-02-21 16:36:44,627 - mmdet - INFO - Epoch [20][250/322]	lr: 2.746e-04, eta: 0:07:28, time: 0.217, data_time: 0.009, memory: 565, loss_sem_seg: 0.0037, loss_vote: 0.1145, recall_Pedestrian: 0.9562, recall_Cyclist: 0.9481, recall_Car: 0.9774, loss: 0.1182, grad_norm: 0.2458
+2025-02-21 16:36:55,036 - mmdet - INFO - Epoch [20][300/322]	lr: 2.554e-04, eta: 0:07:10, time: 0.208, data_time: 0.008, memory: 565, loss_sem_seg: 0.0039, loss_vote: 0.1139, recall_Pedestrian: 0.9635, recall_Cyclist: 0.9716, recall_Car: 0.9531, loss: 0.1177, grad_norm: 0.2504
+2025-02-21 16:37:00,952 - mmdet - INFO - Saving checkpoint at 20 epochs
+2025-02-21 16:37:51,693 - mmdet - INFO - Epoch [21][50/322]	lr: 2.288e-04, eta: 0:06:52, time: 1.003, data_time: 0.803, memory: 565, loss_sem_seg: 0.0037, loss_vote: 0.1140, recall_Pedestrian: 0.9556, recall_Cyclist: 0.9699, recall_Car: 0.9571, loss: 0.1177, grad_norm: 0.2493
+2025-02-21 16:38:01,889 - mmdet - INFO - Epoch [21][100/322]	lr: 2.112e-04, eta: 0:06:34, time: 0.204, data_time: 0.007, memory: 565, loss_sem_seg: 0.0037, loss_vote: 0.1114, recall_Pedestrian: 0.9655, recall_Cyclist: 0.9191, recall_Car: 0.9624, loss: 0.1150, grad_norm: 0.2460
+2025-02-21 16:38:12,010 - mmdet - INFO - Epoch [21][150/322]	lr: 1.942e-04, eta: 0:06:16, time: 0.202, data_time: 0.007, memory: 565, loss_sem_seg: 0.0037, loss_vote: 0.1112, recall_Pedestrian: 0.9578, recall_Cyclist: 0.9427, recall_Car: 0.9727, loss: 0.1149, grad_norm: 0.2385
+2025-02-21 16:38:21,972 - mmdet - INFO - Epoch [21][200/322]	lr: 1.778e-04, eta: 0:05:59, time: 0.199, data_time: 0.009, memory: 565, loss_sem_seg: 0.0038, loss_vote: 0.1149, recall_Pedestrian: 0.9591, recall_Cyclist: 0.9554, recall_Car: 0.9555, loss: 0.1188, grad_norm: 0.2435
+2025-02-21 16:38:31,671 - mmdet - INFO - Epoch [21][250/322]	lr: 1.622e-04, eta: 0:05:41, time: 0.194, data_time: 0.008, memory: 565, loss_sem_seg: 0.0037, loss_vote: 0.1092, recall_Pedestrian: 0.9537, recall_Cyclist: 0.9568, recall_Car: 0.9679, loss: 0.1129, grad_norm: 0.2405
+2025-02-21 16:38:41,500 - mmdet - INFO - Epoch [21][300/322]	lr: 1.472e-04, eta: 0:05:24, time: 0.197, data_time: 0.007, memory: 565, loss_sem_seg: 0.0037, loss_vote: 0.1089, recall_Pedestrian: 0.9626, recall_Cyclist: 0.9127, recall_Car: 0.9645, loss: 0.1126, grad_norm: 0.2517
+2025-02-21 16:39:38,200 - mmdet - INFO - Epoch [22][50/322]	lr: 1.268e-04, eta: 0:05:04, time: 1.024, data_time: 0.742, memory: 565, loss_sem_seg: 0.0037, loss_vote: 0.1118, recall_Pedestrian: 0.9647, recall_Cyclist: 0.9665, recall_Car: 0.9639, loss: 0.1156, grad_norm: 0.2475
+2025-02-21 16:39:48,157 - mmdet - INFO - Epoch [22][100/322]	lr: 1.136e-04, eta: 0:04:46, time: 0.199, data_time: 0.007, memory: 565, loss_sem_seg: 0.0037, loss_vote: 0.1086, recall_Pedestrian: 0.9584, recall_Cyclist: 0.9304, recall_Car: 0.9449, loss: 0.1123, grad_norm: 0.2345
+2025-02-21 16:39:58,238 - mmdet - INFO - Epoch [22][150/322]	lr: 1.010e-04, eta: 0:04:29, time: 0.202, data_time: 0.007, memory: 565, loss_sem_seg: 0.0037, loss_vote: 0.1060, recall_Pedestrian: 0.9696, recall_Cyclist: 0.9555, recall_Car: 0.9681, loss: 0.1096, grad_norm: 0.2257
+2025-02-21 16:40:08,509 - mmdet - INFO - Epoch [22][200/322]	lr: 8.913e-05, eta: 0:04:12, time: 0.205, data_time: 0.008, memory: 565, loss_sem_seg: 0.0036, loss_vote: 0.1059, recall_Pedestrian: 0.9726, recall_Cyclist: 0.9564, recall_Car: 0.9722, loss: 0.1096, grad_norm: 0.2263
+2025-02-21 16:40:18,975 - mmdet - INFO - Epoch [22][250/322]	lr: 7.799e-05, eta: 0:03:55, time: 0.209, data_time: 0.007, memory: 565, loss_sem_seg: 0.0037, loss_vote: 0.1058, recall_Pedestrian: 0.9606, recall_Cyclist: 0.9553, recall_Car: 0.9632, loss: 0.1096, grad_norm: 0.2310
+2025-02-21 16:40:29,522 - mmdet - INFO - Epoch [22][300/322]	lr: 6.758e-05, eta: 0:03:38, time: 0.211, data_time: 0.009, memory: 565, loss_sem_seg: 0.0036, loss_vote: 0.1084, recall_Pedestrian: 0.9688, recall_Cyclist: 0.9574, recall_Car: 0.9536, loss: 0.1121, grad_norm: 0.2409
+2025-02-21 16:40:35,327 - mmdet - INFO - Saving checkpoint at 22 epochs
+2025-02-21 16:41:29,647 - mmdet - INFO - Epoch [23][50/322]	lr: 5.386e-05, eta: 0:03:17, time: 1.074, data_time: 0.726, memory: 565, loss_sem_seg: 0.0036, loss_vote: 0.1070, recall_Pedestrian: 0.9580, recall_Cyclist: 0.9754, recall_Car: 0.9608, loss: 0.1106, grad_norm: 0.2240
+2025-02-21 16:41:40,319 - mmdet - INFO - Epoch [23][100/322]	lr: 4.524e-05, eta: 0:03:00, time: 0.213, data_time: 0.009, memory: 565, loss_sem_seg: 0.0036, loss_vote: 0.1068, recall_Pedestrian: 0.9648, recall_Cyclist: 0.9362, recall_Car: 0.9757, loss: 0.1104, grad_norm: 0.2366
+2025-02-21 16:41:51,488 - mmdet - INFO - Epoch [23][150/322]	lr: 3.736e-05, eta: 0:02:43, time: 0.224, data_time: 0.009, memory: 565, loss_sem_seg: 0.0036, loss_vote: 0.1059, recall_Pedestrian: 0.9669, recall_Cyclist: 0.9416, recall_Car: 0.9610, loss: 0.1095, grad_norm: 0.2223
+2025-02-21 16:42:02,202 - mmdet - INFO - Epoch [23][200/322]	lr: 3.022e-05, eta: 0:02:26, time: 0.214, data_time: 0.008, memory: 565, loss_sem_seg: 0.0038, loss_vote: 0.1061, recall_Pedestrian: 0.9662, recall_Cyclist: 0.9429, recall_Car: 0.9688, loss: 0.1099, grad_norm: 0.2217
+2025-02-21 16:42:12,990 - mmdet - INFO - Epoch [23][250/322]	lr: 2.384e-05, eta: 0:02:09, time: 0.216, data_time: 0.008, memory: 565, loss_sem_seg: 0.0035, loss_vote: 0.1082, recall_Pedestrian: 0.9697, recall_Cyclist: 0.9515, recall_Car: 0.9470, loss: 0.1117, grad_norm: 0.2369
+2025-02-21 16:42:23,519 - mmdet - INFO - Epoch [23][300/322]	lr: 1.820e-05, eta: 0:01:52, time: 0.211, data_time: 0.008, memory: 565, loss_sem_seg: 0.0036, loss_vote: 0.1069, recall_Pedestrian: 0.9495, recall_Cyclist: 0.9595, recall_Car: 0.9638, loss: 0.1105, grad_norm: 0.2255
+2025-02-21 16:43:23,559 - mmdet - INFO - Epoch [24][50/322]	lr: 1.142e-05, eta: 0:01:30, time: 1.089, data_time: 0.772, memory: 565, loss_sem_seg: 0.0036, loss_vote: 0.1046, recall_Pedestrian: 0.9586, recall_Cyclist: 0.9554, recall_Car: 0.9675, loss: 0.1082, grad_norm: 0.2301
+2025-02-21 16:43:34,208 - mmdet - INFO - Epoch [24][100/322]	lr: 7.631e-06, eta: 0:01:13, time: 0.213, data_time: 0.009, memory: 565, loss_sem_seg: 0.0035, loss_vote: 0.1059, recall_Pedestrian: 0.9627, recall_Cyclist: 0.9525, recall_Car: 0.9700, loss: 0.1094, grad_norm: 0.2322
+2025-02-21 16:43:45,023 - mmdet - INFO - Epoch [24][150/322]	lr: 4.606e-06, eta: 0:00:56, time: 0.216, data_time: 0.008, memory: 565, loss_sem_seg: 0.0037, loss_vote: 0.1058, recall_Pedestrian: 0.9600, recall_Cyclist: 0.9485, recall_Car: 0.9601, loss: 0.1094, grad_norm: 0.2256
+2025-02-21 16:43:55,776 - mmdet - INFO - Epoch [24][200/322]	lr: 2.344e-06, eta: 0:00:40, time: 0.215, data_time: 0.009, memory: 565, loss_sem_seg: 0.0037, loss_vote: 0.1060, recall_Pedestrian: 0.9582, recall_Cyclist: 0.9616, recall_Car: 0.9709, loss: 0.1097, grad_norm: 0.2136
+2025-02-21 16:44:06,388 - mmdet - INFO - Epoch [24][250/322]	lr: 8.452e-07, eta: 0:00:23, time: 0.212, data_time: 0.008, memory: 565, loss_sem_seg: 0.0038, loss_vote: 0.1081, recall_Pedestrian: 0.9463, recall_Cyclist: 0.9593, recall_Car: 0.9763, loss: 0.1118, grad_norm: 0.2344
+2025-02-21 16:44:16,727 - mmdet - INFO - Epoch [24][300/322]	lr: 1.109e-07, eta: 0:00:07, time: 0.207, data_time: 0.006, memory: 565, loss_sem_seg: 0.0035, loss_vote: 0.1053, recall_Pedestrian: 0.9675, recall_Cyclist: 0.9479, recall_Car: 0.9758, loss: 0.1088, grad_norm: 0.2279
+2025-02-21 16:44:22,400 - mmdet - INFO - Saving checkpoint at 24 epochs

@@ -1,0 +1,987 @@
+2024-08-20 13:21:27,532 - mmdet - INFO - Environment info:
+------------------------------------------------------------
+sys.platform: linux
+Python: 3.8.19 (default, Mar 20 2024, 19:58:24) [GCC 11.2.0]
+CUDA available: True
+GPU 0,1,2,3: NVIDIA GeForce RTX 4090
+CUDA_HOME: /usr/local/cuda
+NVCC: Cuda compilation tools, release 11.3, V11.3.58
+GCC: gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0
+PyTorch: 1.12.1
+PyTorch compiling details: PyTorch built with:
+  - GCC 9.3
+  - C++ Version: 201402
+  - Intel(R) oneAPI Math Kernel Library Version 2023.1-Product Build 20230303 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v2.6.0 (Git Hash 52b5f107dd9cf10910aaa19cb47f3abf9b349815)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - LAPACK is enabled (usually provided by MKL)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 11.6
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_61,code=sm_61;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86;-gencode;arch=compute_37,code=compute_37
+  - CuDNN 8.3.2  (built against CUDA 11.5)
+  - Magma 2.6.1
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=11.6, CUDNN_VERSION=8.3.2, CXX_COMPILER=/opt/rh/devtoolset-9/root/usr/bin/c++, CXX_FLAGS= -fabi-version=11 -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_KINETO -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -DEDGE_PROFILER_USE_KINETO -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-unused-parameter -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Werror=cast-function-type -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_VERSION=1.12.1, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=OFF, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, USE_ROCM=OFF, 
+
+TorchVision: 0.13.1
+OpenCV: 4.10.0
+MMCV: 1.6.0
+MMCV Compiler: GCC 9.3
+MMCV CUDA Compiler: 11.6
+MMDetection: 2.24.0
+MMSegmentation: 0.24.0
+MMDetection3D: 0.17.0+
+------------------------------------------------------------
+
+2024-08-20 13:21:28,619 - mmdet - INFO - Distributed training: True
+2024-08-20 13:21:29,286 - mmdet - INFO - Config:
+dataset_type = 'KittiDataset'
+data_root = 'data/vod/'
+class_names = ['Pedestrian', 'Cyclist', 'Car']
+point_cloud_range = [0, -25.6, -3, 51.2, 25.6, 2]
+input_modality = dict(use_lidar=True, use_camera=False)
+file_client_args = dict(backend='disk')
+voxel_size = [0.16, 0.16, 5]
+model = dict(
+    type='VoxelNet',
+    voxel_layer=dict(
+        max_num_points=10,
+        point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2],
+        voxel_size=[0.16, 0.16, 5],
+        max_voxels=(16000, 40000)),
+    voxel_encoder=dict(
+        type='RadarPillarFeatureNet',
+        in_channels=5,
+        feat_channels=[64],
+        with_distance=False,
+        voxel_size=[0.16, 0.16, 5],
+        point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2],
+        legacy=False,
+        with_velocity_snr_center=True),
+    middle_encoder=dict(
+        type='PointPillarsScatter', in_channels=64, output_shape=[320, 320]),
+    backbone=dict(
+        type='SECOND',
+        in_channels=64,
+        layer_nums=[3, 5, 5],
+        layer_strides=[2, 2, 2],
+        out_channels=[64, 128, 256]),
+    neck=dict(
+        type='SECONDFPN',
+        in_channels=[64, 128, 256],
+        upsample_strides=[1, 2, 4],
+        out_channels=[128, 128, 128]),
+    bbox_head=dict(
+        type='Anchor3DHead',
+        num_classes=3,
+        in_channels=384,
+        feat_channels=384,
+        use_direction_classifier=True,
+        anchor_generator=dict(
+            type='Anchor3DRangeGenerator',
+            ranges=[[0, -25.6, -0.6, 51.2, 25.6, -0.6],
+                    [0, -25.6, -0.6, 51.2, 25.6, -0.6],
+                    [0, -25.6, -1.78, 51.2, 25.6, -1.78]],
+            sizes=[[0.6, 0.8, 1.73], [0.6, 1.76, 1.73], [1.6, 3.9, 1.56]],
+            rotations=[0, 1.57],
+            reshape_out=False),
+        diff_rad_by_sin=True,
+        bbox_coder=dict(type='DeltaXYZWLHRBBoxCoder'),
+        loss_cls=dict(
+            type='FocalLoss',
+            use_sigmoid=True,
+            gamma=2.0,
+            alpha=0.25,
+            loss_weight=1.0),
+        loss_bbox=dict(
+            type='SmoothL1Loss', beta=0.1111111111111111, loss_weight=2.0),
+        loss_dir=dict(
+            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=0.2)),
+    train_cfg=dict(
+        assigner=[
+            dict(
+                type='MaxIoUAssigner',
+                iou_calculator=dict(type='BboxOverlapsNearest3D'),
+                pos_iou_thr=0.5,
+                neg_iou_thr=0.35,
+                min_pos_iou=0.35,
+                ignore_iof_thr=-1),
+            dict(
+                type='MaxIoUAssigner',
+                iou_calculator=dict(type='BboxOverlapsNearest3D'),
+                pos_iou_thr=0.5,
+                neg_iou_thr=0.35,
+                min_pos_iou=0.35,
+                ignore_iof_thr=-1),
+            dict(
+                type='MaxIoUAssigner',
+                iou_calculator=dict(type='BboxOverlapsNearest3D'),
+                pos_iou_thr=0.6,
+                neg_iou_thr=0.45,
+                min_pos_iou=0.45,
+                ignore_iof_thr=-1)
+        ],
+        allowed_border=0,
+        pos_weight=-1,
+        debug=False),
+    test_cfg=dict(
+        use_rotate_nms=True,
+        nms_across_levels=False,
+        nms_thr=0.01,
+        score_thr=0.1,
+        min_bbox_size=0,
+        nms_pre=100,
+        max_num=50))
+train_pipeline = [
+    dict(
+        type='LoadPointsFromFile',
+        coord_type='LIDAR',
+        load_dim=7,
+        use_dim=[0, 1, 2, 3, 5],
+        file_client_args=dict(backend='disk')),
+    dict(
+        type='LoadAnnotations3D',
+        with_bbox_3d=True,
+        with_label_3d=True,
+        file_client_args=dict(backend='disk')),
+    dict(type='RandomFlip3D', flip_ratio_bev_horizontal=0.5),
+    dict(
+        type='GlobalRotScaleTrans',
+        rot_range=[0, 0],
+        scale_ratio_range=[0.95, 1.05]),
+    dict(
+        type='PointsRangeFilter',
+        point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2]),
+    dict(
+        type='ObjectRangeFilter',
+        point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2]),
+    dict(type='PointShuffle'),
+    dict(
+        type='DefaultFormatBundle3D',
+        class_names=['Pedestrian', 'Cyclist', 'Car']),
+    dict(type='Collect3D', keys=['points', 'gt_bboxes_3d', 'gt_labels_3d'])
+]
+test_pipeline = [
+    dict(
+        type='LoadPointsFromFile',
+        coord_type='LIDAR',
+        load_dim=7,
+        use_dim=[0, 1, 2, 3, 5],
+        file_client_args=dict(backend='disk')),
+    dict(type='LoadImageFromFile'),
+    dict(
+        type='MultiScaleFlipAug3D',
+        img_scale=(1936, 1216),
+        pts_scale_ratio=1,
+        flip=False,
+        transforms=[
+            dict(
+                type='GlobalRotScaleTrans',
+                rot_range=[0, 0],
+                scale_ratio_range=[1.0, 1.0],
+                translation_std=[0, 0, 0]),
+            dict(type='RandomFlip3D'),
+            dict(
+                type='PointsRangeFilter',
+                point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2]),
+            dict(
+                type='DefaultFormatBundle3D',
+                class_names=['Pedestrian', 'Cyclist', 'Car'],
+                with_label=False),
+            dict(type='Collect3D', keys=['points'])
+        ])
+]
+eval_pipeline = [
+    dict(
+        type='DefaultFormatBundle3D',
+        class_names=['Pedestrian', 'Cyclist', 'Car'],
+        with_label=False),
+    dict(type='Collect3D', keys=['points'])
+]
+data = dict(
+    samples_per_gpu=4,
+    workers_per_gpu=4,
+    train=dict(
+        type='RepeatDataset',
+        times=1,
+        dataset=dict(
+            type='KittiDataset',
+            data_root='data/vod/',
+            ann_file='data/vod/vod_infos_train.pkl',
+            split='training',
+            pts_prefix='velodyne_reduced',
+            pipeline=[
+                dict(
+                    type='LoadPointsFromFile',
+                    coord_type='LIDAR',
+                    load_dim=7,
+                    use_dim=[0, 1, 2, 3, 5],
+                    file_client_args=dict(backend='disk')),
+                dict(
+                    type='LoadAnnotations3D',
+                    with_bbox_3d=True,
+                    with_label_3d=True,
+                    file_client_args=dict(backend='disk')),
+                dict(type='RandomFlip3D', flip_ratio_bev_horizontal=0.5),
+                dict(
+                    type='GlobalRotScaleTrans',
+                    rot_range=[0, 0],
+                    scale_ratio_range=[0.95, 1.05]),
+                dict(
+                    type='PointsRangeFilter',
+                    point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2]),
+                dict(
+                    type='ObjectRangeFilter',
+                    point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2]),
+                dict(type='PointShuffle'),
+                dict(
+                    type='DefaultFormatBundle3D',
+                    class_names=['Pedestrian', 'Cyclist', 'Car']),
+                dict(
+                    type='Collect3D',
+                    keys=['points', 'gt_bboxes_3d', 'gt_labels_3d'])
+            ],
+            modality=dict(use_lidar=True, use_camera=False),
+            classes=['Pedestrian', 'Cyclist', 'Car'],
+            test_mode=False,
+            box_type_3d='LiDAR')),
+    val=dict(
+        type='KittiDataset',
+        data_root='data/vod/',
+        ann_file='data/vod/vod_infos_val.pkl',
+        split='training',
+        pts_prefix='velodyne_reduced',
+        pipeline=[
+            dict(
+                type='LoadPointsFromFile',
+                coord_type='LIDAR',
+                load_dim=7,
+                use_dim=[0, 1, 2, 3, 5],
+                file_client_args=dict(backend='disk')),
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='MultiScaleFlipAug3D',
+                img_scale=(1936, 1216),
+                pts_scale_ratio=1,
+                flip=False,
+                transforms=[
+                    dict(
+                        type='GlobalRotScaleTrans',
+                        rot_range=[0, 0],
+                        scale_ratio_range=[1.0, 1.0],
+                        translation_std=[0, 0, 0]),
+                    dict(type='RandomFlip3D'),
+                    dict(
+                        type='PointsRangeFilter',
+                        point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2]),
+                    dict(
+                        type='DefaultFormatBundle3D',
+                        class_names=['Pedestrian', 'Cyclist', 'Car'],
+                        with_label=False),
+                    dict(type='Collect3D', keys=['points'])
+                ])
+        ],
+        modality=dict(use_lidar=True, use_camera=False),
+        classes=['Pedestrian', 'Cyclist', 'Car'],
+        test_mode=True,
+        box_type_3d='LiDAR'),
+    test=dict(
+        type='KittiDataset',
+        data_root='data/vod/',
+        ann_file='data/vod/vod_infos_val.pkl',
+        split='training',
+        pts_prefix='velodyne_reduced',
+        pipeline=[
+            dict(
+                type='LoadPointsFromFile',
+                coord_type='LIDAR',
+                load_dim=7,
+                use_dim=[0, 1, 2, 3, 5],
+                file_client_args=dict(backend='disk')),
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='MultiScaleFlipAug3D',
+                img_scale=(1936, 1216),
+                pts_scale_ratio=1,
+                flip=False,
+                transforms=[
+                    dict(
+                        type='GlobalRotScaleTrans',
+                        rot_range=[0, 0],
+                        scale_ratio_range=[1.0, 1.0],
+                        translation_std=[0, 0, 0]),
+                    dict(type='RandomFlip3D'),
+                    dict(
+                        type='PointsRangeFilter',
+                        point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2]),
+                    dict(
+                        type='DefaultFormatBundle3D',
+                        class_names=['Pedestrian', 'Cyclist', 'Car'],
+                        with_label=False),
+                    dict(type='Collect3D', keys=['points'])
+                ])
+        ],
+        modality=dict(use_lidar=True, use_camera=False),
+        classes=['Pedestrian', 'Cyclist', 'Car'],
+        test_mode=True,
+        box_type_3d='LiDAR'))
+evaluation = dict(
+    interval=1,
+    pipeline=[
+        dict(
+            type='DefaultFormatBundle3D',
+            class_names=['Pedestrian', 'Cyclist', 'Car'],
+            with_label=False),
+        dict(type='Collect3D', keys=['points'])
+    ])
+lr = 0.003
+optimizer = dict(type='AdamW', lr=0.003, betas=(0.95, 0.99), weight_decay=0.01)
+optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
+lr_config = dict(
+    policy='step',
+    warmup=None,
+    warmup_iters=1000,
+    warmup_ratio=0.001,
+    step=[16, 20])
+momentum_config = dict(
+    policy='cyclic',
+    target_ratio=(0.8947368421052632, 1),
+    cyclic_times=1,
+    step_ratio_up=0.4)
+runner = dict(type='EpochBasedRunner', max_epochs=24)
+checkpoint_config = dict(interval=1)
+log_config = dict(
+    interval=50,
+    hooks=[dict(type='TextLoggerHook'),
+           dict(type='TensorboardLoggerHook')])
+dist_params = dict(backend='nccl')
+log_level = 'INFO'
+work_dir = './work_dirs/vod-Radarpillarnet_8.20'
+load_from = None
+resume_from = None
+workflow = [('train', 1)]
+gpu_ids = range(0, 4)
+
+2024-08-20 13:21:29,286 - mmdet - INFO - Set random seed to 0, deterministic: False
+2024-08-20 13:21:29,326 - mmdet - INFO - initialize SECOND with init_cfg {'type': 'Kaiming', 'layer': 'Conv2d'}
+2024-08-20 13:21:29,352 - mmdet - INFO - initialize SECONDFPN with init_cfg [{'type': 'Kaiming', 'layer': 'ConvTranspose2d'}, {'type': 'Constant', 'layer': 'NaiveSyncBatchNorm2d', 'val': 1.0}]
+2024-08-20 13:21:29,357 - mmdet - INFO - initialize Anchor3DHead with init_cfg {'type': 'Normal', 'layer': 'Conv2d', 'std': 0.01, 'override': {'type': 'Normal', 'name': 'conv_cls', 'std': 0.01, 'bias_prob': 0.01}}
+Name of parameter - Initialization information
+
+backbone.blocks.0.0.weight - torch.Size([64, 64, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.blocks.0.1.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.0.1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.0.3.weight - torch.Size([64, 64, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.blocks.0.4.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.0.4.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.0.6.weight - torch.Size([64, 64, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.blocks.0.7.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.0.7.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.0.9.weight - torch.Size([64, 64, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.blocks.0.10.weight - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.0.10.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.1.0.weight - torch.Size([128, 64, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.blocks.1.1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.1.1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.1.3.weight - torch.Size([128, 128, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.blocks.1.4.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.1.4.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.1.6.weight - torch.Size([128, 128, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.blocks.1.7.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.1.7.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.1.9.weight - torch.Size([128, 128, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.blocks.1.10.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.1.10.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.1.12.weight - torch.Size([128, 128, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.blocks.1.13.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.1.13.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.1.15.weight - torch.Size([128, 128, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.blocks.1.16.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.1.16.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.2.0.weight - torch.Size([256, 128, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.blocks.2.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.2.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.2.3.weight - torch.Size([256, 256, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.blocks.2.4.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.2.4.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.2.6.weight - torch.Size([256, 256, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.blocks.2.7.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.2.7.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.2.9.weight - torch.Size([256, 256, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.blocks.2.10.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.2.10.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.2.12.weight - torch.Size([256, 256, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.blocks.2.13.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.2.13.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.2.15.weight - torch.Size([256, 256, 3, 3]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+backbone.blocks.2.16.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+backbone.blocks.2.16.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+neck.deblocks.0.0.weight - torch.Size([64, 128, 1, 1]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+neck.deblocks.0.1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+neck.deblocks.0.1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+neck.deblocks.1.0.weight - torch.Size([128, 128, 2, 2]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+neck.deblocks.1.1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+neck.deblocks.1.1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+neck.deblocks.2.0.weight - torch.Size([256, 128, 4, 4]): 
+KaimingInit: a=0, mode=fan_out, nonlinearity=relu, distribution =normal, bias=0 
+
+neck.deblocks.2.1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+neck.deblocks.2.1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+bbox_head.conv_cls.weight - torch.Size([18, 384, 1, 1]): 
+NormalInit: mean=0, std=0.01, bias=-4.59511985013459 
+
+bbox_head.conv_cls.bias - torch.Size([18]): 
+NormalInit: mean=0, std=0.01, bias=-4.59511985013459 
+
+bbox_head.conv_reg.weight - torch.Size([42, 384, 1, 1]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+bbox_head.conv_reg.bias - torch.Size([42]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+bbox_head.conv_dir_cls.weight - torch.Size([12, 384, 1, 1]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+bbox_head.conv_dir_cls.bias - torch.Size([12]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+voxel_encoder.pfn_layers.0.norm1.weight - torch.Size([32]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+voxel_encoder.pfn_layers.0.norm1.bias - torch.Size([32]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+voxel_encoder.pfn_layers.0.norm2.weight - torch.Size([16]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+voxel_encoder.pfn_layers.0.norm2.bias - torch.Size([16]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+voxel_encoder.pfn_layers.0.norm3.weight - torch.Size([16]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+voxel_encoder.pfn_layers.0.norm3.bias - torch.Size([16]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+voxel_encoder.pfn_layers.0.linear1.weight - torch.Size([32, 8]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+voxel_encoder.pfn_layers.0.linear2.weight - torch.Size([16, 2]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+
+voxel_encoder.pfn_layers.0.linear3.weight - torch.Size([16, 2]): 
+The value is the same before and after calling `init_weights` of VoxelNet  
+2024-08-20 13:21:29,358 - mmdet - INFO - Model:
+VoxelNet(
+  (backbone): SECOND(
+    (blocks): ModuleList(
+      (0): Sequential(
+        (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+        (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (4): BatchNorm2d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (5): ReLU(inplace=True)
+        (6): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (7): BatchNorm2d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (8): ReLU(inplace=True)
+        (9): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (10): BatchNorm2d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (11): ReLU(inplace=True)
+      )
+      (1): Sequential(
+        (0): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+        (3): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (4): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (5): ReLU(inplace=True)
+        (6): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (7): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (8): ReLU(inplace=True)
+        (9): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (10): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (11): ReLU(inplace=True)
+        (12): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (13): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (14): ReLU(inplace=True)
+        (15): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (16): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (17): ReLU(inplace=True)
+      )
+      (2): Sequential(
+        (0): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (1): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+        (3): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (4): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (5): ReLU(inplace=True)
+        (6): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (7): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (8): ReLU(inplace=True)
+        (9): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (10): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (11): ReLU(inplace=True)
+        (12): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (13): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (14): ReLU(inplace=True)
+        (15): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (16): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (17): ReLU(inplace=True)
+      )
+    )
+  )
+  init_cfg={'type': 'Kaiming', 'layer': 'Conv2d'}
+  (neck): SECONDFPN(
+    (deblocks): ModuleList(
+      (0): Sequential(
+        (0): ConvTranspose2d(64, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+      )
+      (1): Sequential(
+        (0): ConvTranspose2d(128, 128, kernel_size=(2, 2), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+      )
+      (2): Sequential(
+        (0): ConvTranspose2d(256, 128, kernel_size=(4, 4), stride=(4, 4), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+      )
+    )
+  )
+  init_cfg=[{'type': 'Kaiming', 'layer': 'ConvTranspose2d'}, {'type': 'Constant', 'layer': 'NaiveSyncBatchNorm2d', 'val': 1.0}]
+  (bbox_head): Anchor3DHead(
+    (loss_cls): FocalLoss()
+    (loss_bbox): SmoothL1Loss()
+    (loss_dir): CrossEntropyLoss(avg_non_ignore=False)
+    (conv_cls): Conv2d(384, 18, kernel_size=(1, 1), stride=(1, 1))
+    (conv_reg): Conv2d(384, 42, kernel_size=(1, 1), stride=(1, 1))
+    (conv_dir_cls): Conv2d(384, 12, kernel_size=(1, 1), stride=(1, 1))
+  )
+  init_cfg={'type': 'Normal', 'layer': 'Conv2d', 'std': 0.01, 'override': {'type': 'Normal', 'name': 'conv_cls', 'std': 0.01, 'bias_prob': 0.01}}
+  (voxel_layer): Voxelization(voxel_size=[0.16, 0.16, 5], point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2], max_num_points=10, max_voxels=(16000, 40000), deterministic=True)
+  (voxel_encoder): RadarPillarFeatureNet(
+    (pfn_layers): ModuleList(
+      (0): PFNLayer_Radar(
+        (norm1): BatchNorm1d(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (norm2): BatchNorm1d(16, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (norm3): BatchNorm1d(16, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (linear1): Linear(in_features=8, out_features=32, bias=False)
+        (linear2): Linear(in_features=2, out_features=16, bias=False)
+        (linear3): Linear(in_features=2, out_features=16, bias=False)
+      )
+    )
+  )
+  (middle_encoder): PointPillarsScatter()
+)
+2024-08-20 13:21:32,100 - mmdet - INFO - Automatic scaling of learning rate (LR) has been disabled.
+2024-08-20 13:21:32,233 - mmdet - INFO - Start running, host: yq@amax, work_dir: /home/yq/yq_codebase/RPWCnet/work_dirs/vod-Radarpillarnet_8.20
+2024-08-20 13:21:32,233 - mmdet - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) StepLrUpdaterHook                  
+(HIGH        ) CyclicMomentumUpdaterHook          
+(NORMAL      ) CheckpointHook                     
+(LOW         ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) StepLrUpdaterHook                  
+(HIGH        ) CyclicMomentumUpdaterHook          
+(NORMAL      ) DistSamplerSeedHook                
+(LOW         ) IterTimerHook                      
+(LOW         ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) StepLrUpdaterHook                  
+(HIGH        ) CyclicMomentumUpdaterHook          
+(LOW         ) IterTimerHook                      
+(LOW         ) DistEvalHook                       
+ -------------------- 
+after_train_iter:
+(ABOVE_NORMAL) OptimizerHook                      
+(NORMAL      ) CheckpointHook                     
+(LOW         ) IterTimerHook                      
+(LOW         ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) CheckpointHook                     
+(LOW         ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+before_val_epoch:
+(NORMAL      ) DistSamplerSeedHook                
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+before_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_epoch:
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+after_run:
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+2024-08-20 13:21:32,233 - mmdet - INFO - workflow: [('train', 1)], max: 24 epochs
+2024-08-20 13:21:32,233 - mmdet - INFO - Checkpoints will be saved to /home/yq/yq_codebase/RPWCnet/work_dirs/vod-Radarpillarnet_8.20 by HardDiskBackend.
+2024-08-20 13:22:32,955 - mmdet - INFO - Epoch [1][50/322]	lr: 3.000e-03, eta: 2:35:13, time: 1.213, data_time: 0.985, memory: 1658, loss_cls: 0.5658, loss_bbox: 0.9637, loss_dir: 0.0759, loss: 1.6055, grad_norm: 3.6930
+2024-08-20 13:22:41,264 - mmdet - INFO - Epoch [1][100/322]	lr: 3.000e-03, eta: 1:27:40, time: 0.166, data_time: 0.009, memory: 1660, loss_cls: 0.4513, loss_bbox: 0.7265, loss_dir: 0.0681, loss: 1.2459, grad_norm: 1.3754
+2024-08-20 13:22:49,556 - mmdet - INFO - Epoch [1][150/322]	lr: 3.000e-03, eta: 1:05:02, time: 0.166, data_time: 0.009, memory: 1660, loss_cls: 0.4267, loss_bbox: 0.6834, loss_dir: 0.0659, loss: 1.1761, grad_norm: 1.3177
+2024-08-20 13:22:57,793 - mmdet - INFO - Epoch [1][200/322]	lr: 3.000e-03, eta: 0:53:37, time: 0.165, data_time: 0.009, memory: 1660, loss_cls: 0.4167, loss_bbox: 0.7031, loss_dir: 0.0599, loss: 1.1797, grad_norm: 1.3157
+2024-08-20 13:23:06,068 - mmdet - INFO - Epoch [1][250/322]	lr: 3.000e-03, eta: 0:46:44, time: 0.166, data_time: 0.009, memory: 1660, loss_cls: 0.4081, loss_bbox: 0.6815, loss_dir: 0.0577, loss: 1.1473, grad_norm: 1.1835
+2024-08-20 13:23:14,300 - mmdet - INFO - Epoch [1][300/322]	lr: 3.000e-03, eta: 0:42:05, time: 0.165, data_time: 0.008, memory: 1660, loss_cls: 0.3914, loss_bbox: 0.6531, loss_dir: 0.0544, loss: 1.0989, grad_norm: 1.1591
+2024-08-20 13:23:19,447 - mmdet - INFO - Saving checkpoint at 1 epochs
+2024-08-20 13:24:36,855 - mmdet - INFO - 
+Pedestrian AP40@0.50, 0.50, 0.50:
+bbox AP:11.4653, 13.0308, 13.0797
+bev  AP:6.6680, 8.7441, 8.6779
+3d   AP:2.3664, 5.1286, 5.1286
+aos  AP:10.76, 12.45, 12.50
+Pedestrian AP40@0.25, 0.25, 0.25:
+bbox AP:24.6672, 31.2668, 31.2975
+bev  AP:23.6523, 28.3036, 28.3788
+3d   AP:14.3846, 17.7046, 17.6680
+aos  AP:22.50, 28.83, 28.86
+Cyclist AP40@0.50, 0.50, 0.50:
+bbox AP:19.4535, 14.5787, 14.5194
+bev  AP:10.4230, 8.2427, 8.1971
+3d   AP:5.5083, 3.8678, 3.8853
+aos  AP:19.35, 14.50, 14.44
+Cyclist AP40@0.25, 0.25, 0.25:
+bbox AP:28.4124, 27.3423, 27.5768
+bev  AP:27.1533, 25.1809, 25.2040
+3d   AP:24.9348, 20.0436, 19.9412
+aos  AP:27.84, 26.52, 26.38
+Car AP40@0.50, 0.50, 0.50:
+bbox AP:17.3989, 12.3293, 12.1729
+bev  AP:20.5253, 15.0275, 14.9417
+3d   AP:8.8568, 6.0324, 5.9996
+aos  AP:12.17, 9.18, 9.09
+Car AP40@0.25, 0.25, 0.25:
+bbox AP:24.9702, 20.3162, 20.3405
+bev  AP:24.0344, 18.8003, 18.7409
+3d   AP:20.0475, 13.6079, 13.4614
+aos  AP:15.61, 13.48, 17.85
+
+Overall AP40@easy, moderate, hard:
+bbox AP:23.4928, 23.6461, 23.6824
+bev  AP:23.7770, 22.8374, 22.8415
+3d   AP:16.0587, 14.5935, 14.5363
+aos  AP:20.84, 21.51, 21.44
+
+2024-08-20 13:24:36,864 - mmdet - INFO - Exp name: vod-radarpillarnet.py
+2024-08-20 13:24:36,864 - mmdet - INFO - Epoch(val) [1][324]	KITTI/Pedestrian_3D_easy_strict: 2.3664, KITTI/Pedestrian_BEV_easy_strict: 6.6680, KITTI/Pedestrian_2D_easy_strict: 11.4653, KITTI/Pedestrian_3D_moderate_strict: 5.1286, KITTI/Pedestrian_BEV_moderate_strict: 8.7441, KITTI/Pedestrian_2D_moderate_strict: 13.0308, KITTI/Pedestrian_3D_hard_strict: 5.1286, KITTI/Pedestrian_BEV_hard_strict: 8.6779, KITTI/Pedestrian_2D_hard_strict: 13.0797, KITTI/Pedestrian_3D_easy_loose: 14.3846, KITTI/Pedestrian_BEV_easy_loose: 23.6523, KITTI/Pedestrian_2D_easy_loose: 24.6672, KITTI/Pedestrian_3D_moderate_loose: 17.7046, KITTI/Pedestrian_BEV_moderate_loose: 28.3036, KITTI/Pedestrian_2D_moderate_loose: 31.2668, KITTI/Pedestrian_3D_hard_loose: 17.6680, KITTI/Pedestrian_BEV_hard_loose: 28.3788, KITTI/Pedestrian_2D_hard_loose: 31.2975, KITTI/Cyclist_3D_easy_strict: 5.5083, KITTI/Cyclist_BEV_easy_strict: 10.4230, KITTI/Cyclist_2D_easy_strict: 19.4535, KITTI/Cyclist_3D_moderate_strict: 3.8678, KITTI/Cyclist_BEV_moderate_strict: 8.2427, KITTI/Cyclist_2D_moderate_strict: 14.5787, KITTI/Cyclist_3D_hard_strict: 3.8853, KITTI/Cyclist_BEV_hard_strict: 8.1971, KITTI/Cyclist_2D_hard_strict: 14.5194, KITTI/Cyclist_3D_easy_loose: 24.9348, KITTI/Cyclist_BEV_easy_loose: 27.1533, KITTI/Cyclist_2D_easy_loose: 28.4124, KITTI/Cyclist_3D_moderate_loose: 20.0436, KITTI/Cyclist_BEV_moderate_loose: 25.1809, KITTI/Cyclist_2D_moderate_loose: 27.3423, KITTI/Cyclist_3D_hard_loose: 19.9412, KITTI/Cyclist_BEV_hard_loose: 25.2040, KITTI/Cyclist_2D_hard_loose: 27.5768, KITTI/Car_3D_easy_strict: 8.8568, KITTI/Car_BEV_easy_strict: 20.5253, KITTI/Car_2D_easy_strict: 17.3989, KITTI/Car_3D_moderate_strict: 6.0324, KITTI/Car_BEV_moderate_strict: 15.0275, KITTI/Car_2D_moderate_strict: 12.3293, KITTI/Car_3D_hard_strict: 5.9996, KITTI/Car_BEV_hard_strict: 14.9417, KITTI/Car_2D_hard_strict: 12.1729, KITTI/Car_3D_easy_loose: 20.0475, KITTI/Car_BEV_easy_loose: 24.0344, KITTI/Car_2D_easy_loose: 24.9702, KITTI/Car_3D_moderate_loose: 13.6079, KITTI/Car_BEV_moderate_loose: 18.8003, KITTI/Car_2D_moderate_loose: 20.3162, KITTI/Car_3D_hard_loose: 13.4614, KITTI/Car_BEV_hard_loose: 18.7409, KITTI/Car_2D_hard_loose: 20.3405, KITTI/Overall_3D_easy: 16.0587, KITTI/Overall_BEV_easy: 23.7770, KITTI/Overall_2D_easy: 23.4928, KITTI/Overall_3D_moderate: 14.5935, KITTI/Overall_BEV_moderate: 22.8374, KITTI/Overall_2D_moderate: 23.6461, KITTI/Overall_3D_hard: 14.5363, KITTI/Overall_BEV_hard: 22.8415, KITTI/Overall_2D_hard: 23.6824
+2024-08-20 13:25:32,713 - mmdet - INFO - Epoch [2][50/322]	lr: 3.000e-03, eta: 0:52:01, time: 1.117, data_time: 0.971, memory: 1660, loss_cls: 0.3816, loss_bbox: 0.6681, loss_dir: 0.0526, loss: 1.1023, grad_norm: 1.1446
+2024-08-20 13:25:40,958 - mmdet - INFO - Epoch [2][100/322]	lr: 3.000e-03, eta: 0:47:55, time: 0.165, data_time: 0.009, memory: 1660, loss_cls: 0.3623, loss_bbox: 0.6667, loss_dir: 0.0483, loss: 1.0773, grad_norm: 1.2032
+2024-08-20 13:25:49,325 - mmdet - INFO - Epoch [2][150/322]	lr: 3.000e-03, eta: 0:44:41, time: 0.167, data_time: 0.009, memory: 1660, loss_cls: 0.3401, loss_bbox: 0.6313, loss_dir: 0.0446, loss: 1.0161, grad_norm: 1.0924
+2024-08-20 13:25:57,669 - mmdet - INFO - Epoch [2][200/322]	lr: 3.000e-03, eta: 0:42:03, time: 0.167, data_time: 0.010, memory: 1660, loss_cls: 0.3458, loss_bbox: 0.6263, loss_dir: 0.0436, loss: 1.0156, grad_norm: 1.1684
+2024-08-20 13:26:06,050 - mmdet - INFO - Epoch [2][250/322]	lr: 3.000e-03, eta: 0:39:51, time: 0.168, data_time: 0.009, memory: 1660, loss_cls: 0.3302, loss_bbox: 0.6140, loss_dir: 0.0425, loss: 0.9867, grad_norm: 1.1432
+2024-08-20 13:26:14,338 - mmdet - INFO - Epoch [2][300/322]	lr: 3.000e-03, eta: 0:37:58, time: 0.166, data_time: 0.010, memory: 1660, loss_cls: 0.3267, loss_bbox: 0.6024, loss_dir: 0.0417, loss: 0.9708, grad_norm: 1.0703
+2024-08-20 13:26:19,293 - mmdet - INFO - Saving checkpoint at 2 epochs
+2024-08-20 13:27:27,739 - mmdet - INFO - 
+Pedestrian AP40@0.50, 0.50, 0.50:
+bbox AP:13.7307, 14.0326, 14.0779
+bev  AP:8.5867, 9.2561, 9.2705
+3d   AP:3.7457, 3.1821, 3.0727
+aos  AP:13.13, 13.61, 13.65
+Pedestrian AP40@0.25, 0.25, 0.25:
+bbox AP:32.2628, 36.6208, 36.6458
+bev  AP:33.0492, 36.1601, 36.1114
+3d   AP:20.2153, 23.6296, 23.5868
+aos  AP:30.70, 35.19, 35.23
+Cyclist AP40@0.50, 0.50, 0.50:
+bbox AP:29.9272, 24.2906, 24.1598
+bev  AP:18.5379, 16.0258, 16.0793
+3d   AP:6.6287, 4.5203, 4.4905
+aos  AP:29.58, 24.07, 23.94
+Cyclist AP40@0.25, 0.25, 0.25:
+bbox AP:48.2497, 46.7455, 46.9220
+bev  AP:44.4994, 43.2442, 43.3456
+3d   AP:38.2329, 33.3469, 33.4451
+aos  AP:47.02, 45.72, 45.51
+Car AP40@0.50, 0.50, 0.50:
+bbox AP:32.5180, 23.6739, 23.5396
+bev  AP:37.7083, 30.7592, 30.6339
+3d   AP:22.0764, 15.3690, 15.2066
+aos  AP:30.88, 22.43, 22.33
+Car AP40@0.25, 0.25, 0.25:
+bbox AP:37.9731, 32.0867, 32.1231
+bev  AP:42.4150, 34.1396, 33.9701
+3d   AP:35.7337, 27.3671, 27.0647
+aos  AP:34.94, 28.90, 28.96
+
+Overall AP40@easy, moderate, hard:
+bbox AP:37.6768, 35.6801, 35.7025
+bev  AP:38.4190, 36.7211, 36.6969
+3d   AP:26.8415, 24.1152, 24.0795
+aos  AP:36.20, 34.45, 34.35
+
+2024-08-20 13:27:27,751 - mmdet - INFO - Exp name: vod-radarpillarnet.py
+2024-08-20 13:27:27,751 - mmdet - INFO - Epoch(val) [2][324]	KITTI/Pedestrian_3D_easy_strict: 3.7457, KITTI/Pedestrian_BEV_easy_strict: 8.5867, KITTI/Pedestrian_2D_easy_strict: 13.7307, KITTI/Pedestrian_3D_moderate_strict: 3.1821, KITTI/Pedestrian_BEV_moderate_strict: 9.2561, KITTI/Pedestrian_2D_moderate_strict: 14.0326, KITTI/Pedestrian_3D_hard_strict: 3.0727, KITTI/Pedestrian_BEV_hard_strict: 9.2705, KITTI/Pedestrian_2D_hard_strict: 14.0779, KITTI/Pedestrian_3D_easy_loose: 20.2153, KITTI/Pedestrian_BEV_easy_loose: 33.0492, KITTI/Pedestrian_2D_easy_loose: 32.2628, KITTI/Pedestrian_3D_moderate_loose: 23.6296, KITTI/Pedestrian_BEV_moderate_loose: 36.1601, KITTI/Pedestrian_2D_moderate_loose: 36.6208, KITTI/Pedestrian_3D_hard_loose: 23.5868, KITTI/Pedestrian_BEV_hard_loose: 36.1114, KITTI/Pedestrian_2D_hard_loose: 36.6458, KITTI/Cyclist_3D_easy_strict: 6.6287, KITTI/Cyclist_BEV_easy_strict: 18.5379, KITTI/Cyclist_2D_easy_strict: 29.9272, KITTI/Cyclist_3D_moderate_strict: 4.5203, KITTI/Cyclist_BEV_moderate_strict: 16.0258, KITTI/Cyclist_2D_moderate_strict: 24.2906, KITTI/Cyclist_3D_hard_strict: 4.4905, KITTI/Cyclist_BEV_hard_strict: 16.0793, KITTI/Cyclist_2D_hard_strict: 24.1598, KITTI/Cyclist_3D_easy_loose: 38.2329, KITTI/Cyclist_BEV_easy_loose: 44.4994, KITTI/Cyclist_2D_easy_loose: 48.2497, KITTI/Cyclist_3D_moderate_loose: 33.3469, KITTI/Cyclist_BEV_moderate_loose: 43.2442, KITTI/Cyclist_2D_moderate_loose: 46.7455, KITTI/Cyclist_3D_hard_loose: 33.4451, KITTI/Cyclist_BEV_hard_loose: 43.3456, KITTI/Cyclist_2D_hard_loose: 46.9220, KITTI/Car_3D_easy_strict: 22.0764, KITTI/Car_BEV_easy_strict: 37.7083, KITTI/Car_2D_easy_strict: 32.5180, KITTI/Car_3D_moderate_strict: 15.3690, KITTI/Car_BEV_moderate_strict: 30.7592, KITTI/Car_2D_moderate_strict: 23.6739, KITTI/Car_3D_hard_strict: 15.2066, KITTI/Car_BEV_hard_strict: 30.6339, KITTI/Car_2D_hard_strict: 23.5396, KITTI/Car_3D_easy_loose: 35.7337, KITTI/Car_BEV_easy_loose: 42.4150, KITTI/Car_2D_easy_loose: 37.9731, KITTI/Car_3D_moderate_loose: 27.3671, KITTI/Car_BEV_moderate_loose: 34.1396, KITTI/Car_2D_moderate_loose: 32.0867, KITTI/Car_3D_hard_loose: 27.0647, KITTI/Car_BEV_hard_loose: 33.9701, KITTI/Car_2D_hard_loose: 32.1231, KITTI/Overall_3D_easy: 26.8415, KITTI/Overall_BEV_easy: 38.4190, KITTI/Overall_2D_easy: 37.6768, KITTI/Overall_3D_moderate: 24.1152, KITTI/Overall_BEV_moderate: 36.7211, KITTI/Overall_2D_moderate: 35.6801, KITTI/Overall_3D_hard: 24.0795, KITTI/Overall_BEV_hard: 36.6969, KITTI/Overall_2D_hard: 35.7025
+2024-08-20 13:28:24,505 - mmdet - INFO - Epoch [3][50/322]	lr: 3.000e-03, eta: 0:43:16, time: 1.135, data_time: 0.984, memory: 1660, loss_cls: 0.3149, loss_bbox: 0.6101, loss_dir: 0.0416, loss: 0.9666, grad_norm: 1.0733
+2024-08-20 13:28:32,258 - mmdet - INFO - Epoch [3][100/322]	lr: 3.000e-03, eta: 0:41:17, time: 0.155, data_time: 0.007, memory: 1660, loss_cls: 0.3134, loss_bbox: 0.5985, loss_dir: 0.0392, loss: 0.9511, grad_norm: 1.2059
+2024-08-20 13:28:40,463 - mmdet - INFO - Epoch [3][150/322]	lr: 3.000e-03, eta: 0:39:36, time: 0.164, data_time: 0.008, memory: 1660, loss_cls: 0.2964, loss_bbox: 0.6060, loss_dir: 0.0387, loss: 0.9411, grad_norm: 1.0603
+2024-08-20 13:28:48,664 - mmdet - INFO - Epoch [3][200/322]	lr: 3.000e-03, eta: 0:38:06, time: 0.164, data_time: 0.009, memory: 1660, loss_cls: 0.3048, loss_bbox: 0.5808, loss_dir: 0.0368, loss: 0.9225, grad_norm: 1.1079
+2024-08-20 13:28:56,478 - mmdet - INFO - Epoch [3][250/322]	lr: 3.000e-03, eta: 0:36:42, time: 0.156, data_time: 0.007, memory: 1660, loss_cls: 0.3076, loss_bbox: 0.5907, loss_dir: 0.0399, loss: 0.9382, grad_norm: 1.1783
+2024-08-20 13:29:04,174 - mmdet - INFO - Epoch [3][300/322]	lr: 3.000e-03, eta: 0:35:26, time: 0.154, data_time: 0.007, memory: 1660, loss_cls: 0.2928, loss_bbox: 0.5460, loss_dir: 0.0356, loss: 0.8744, grad_norm: 1.1769
+2024-08-20 13:29:08,835 - mmdet - INFO - Saving checkpoint at 3 epochs
+2024-08-20 13:30:14,999 - mmdet - INFO - 
+Pedestrian AP40@0.50, 0.50, 0.50:
+bbox AP:19.8541, 21.1118, 21.0910
+bev  AP:16.5087, 17.4142, 17.3892
+3d   AP:10.4208, 10.3378, 10.2326
+aos  AP:19.14, 20.44, 20.42
+Pedestrian AP40@0.25, 0.25, 0.25:
+bbox AP:38.7748, 42.3411, 42.4312
+bev  AP:38.0846, 37.8953, 37.9630
+3d   AP:28.3689, 27.6968, 27.7299
+aos  AP:35.78, 39.67, 39.78
+Cyclist AP40@0.50, 0.50, 0.50:
+bbox AP:21.9518, 20.5421, 20.5117
+bev  AP:10.1892, 8.4521, 8.5132
+3d   AP:4.3596, 4.4678, 4.4060
+aos  AP:21.74, 20.33, 20.30
+Cyclist AP40@0.25, 0.25, 0.25:
+bbox AP:55.1256, 53.1696, 53.1900
+bev  AP:52.9000, 50.1437, 50.1104
+3d   AP:41.5398, 41.3405, 41.2620
+aos  AP:52.62, 51.21, 51.03
+Car AP40@0.50, 0.50, 0.50:
+bbox AP:39.2848, 31.5034, 31.4607
+bev  AP:43.1338, 37.7402, 37.4953
+3d   AP:32.3617, 23.5898, 23.4962
+aos  AP:37.48, 29.32, 29.27
+Car AP40@0.25, 0.25, 0.25:
+bbox AP:43.5359, 42.7708, 42.8265
+bev  AP:47.4750, 43.6324, 43.4779
+3d   AP:42.1587, 35.1413, 34.9335
+aos  AP:40.35, 38.27, 38.33
+
+Overall AP40@easy, moderate, hard:
+bbox AP:44.3951, 42.3380, 42.3607
+bev  AP:44.7061, 41.9264, 41.8562
+3d   AP:34.0901, 30.8757, 30.8294
+aos  AP:41.96, 40.07, 40.02
+
+2024-08-20 13:30:15,010 - mmdet - INFO - Exp name: vod-radarpillarnet.py
+2024-08-20 13:30:15,010 - mmdet - INFO - Epoch(val) [3][324]	KITTI/Pedestrian_3D_easy_strict: 10.4208, KITTI/Pedestrian_BEV_easy_strict: 16.5087, KITTI/Pedestrian_2D_easy_strict: 19.8541, KITTI/Pedestrian_3D_moderate_strict: 10.3378, KITTI/Pedestrian_BEV_moderate_strict: 17.4142, KITTI/Pedestrian_2D_moderate_strict: 21.1118, KITTI/Pedestrian_3D_hard_strict: 10.2326, KITTI/Pedestrian_BEV_hard_strict: 17.3892, KITTI/Pedestrian_2D_hard_strict: 21.0910, KITTI/Pedestrian_3D_easy_loose: 28.3689, KITTI/Pedestrian_BEV_easy_loose: 38.0846, KITTI/Pedestrian_2D_easy_loose: 38.7748, KITTI/Pedestrian_3D_moderate_loose: 27.6968, KITTI/Pedestrian_BEV_moderate_loose: 37.8953, KITTI/Pedestrian_2D_moderate_loose: 42.3411, KITTI/Pedestrian_3D_hard_loose: 27.7299, KITTI/Pedestrian_BEV_hard_loose: 37.9630, KITTI/Pedestrian_2D_hard_loose: 42.4312, KITTI/Cyclist_3D_easy_strict: 4.3596, KITTI/Cyclist_BEV_easy_strict: 10.1892, KITTI/Cyclist_2D_easy_strict: 21.9518, KITTI/Cyclist_3D_moderate_strict: 4.4678, KITTI/Cyclist_BEV_moderate_strict: 8.4521, KITTI/Cyclist_2D_moderate_strict: 20.5421, KITTI/Cyclist_3D_hard_strict: 4.4060, KITTI/Cyclist_BEV_hard_strict: 8.5132, KITTI/Cyclist_2D_hard_strict: 20.5117, KITTI/Cyclist_3D_easy_loose: 41.5398, KITTI/Cyclist_BEV_easy_loose: 52.9000, KITTI/Cyclist_2D_easy_loose: 55.1256, KITTI/Cyclist_3D_moderate_loose: 41.3405, KITTI/Cyclist_BEV_moderate_loose: 50.1437, KITTI/Cyclist_2D_moderate_loose: 53.1696, KITTI/Cyclist_3D_hard_loose: 41.2620, KITTI/Cyclist_BEV_hard_loose: 50.1104, KITTI/Cyclist_2D_hard_loose: 53.1900, KITTI/Car_3D_easy_strict: 32.3617, KITTI/Car_BEV_easy_strict: 43.1338, KITTI/Car_2D_easy_strict: 39.2848, KITTI/Car_3D_moderate_strict: 23.5898, KITTI/Car_BEV_moderate_strict: 37.7402, KITTI/Car_2D_moderate_strict: 31.5034, KITTI/Car_3D_hard_strict: 23.4962, KITTI/Car_BEV_hard_strict: 37.4953, KITTI/Car_2D_hard_strict: 31.4607, KITTI/Car_3D_easy_loose: 42.1587, KITTI/Car_BEV_easy_loose: 47.4750, KITTI/Car_2D_easy_loose: 43.5359, KITTI/Car_3D_moderate_loose: 35.1413, KITTI/Car_BEV_moderate_loose: 43.6324, KITTI/Car_2D_moderate_loose: 42.7708, KITTI/Car_3D_hard_loose: 34.9335, KITTI/Car_BEV_hard_loose: 43.4779, KITTI/Car_2D_hard_loose: 42.8265, KITTI/Overall_3D_easy: 34.0901, KITTI/Overall_BEV_easy: 44.7061, KITTI/Overall_2D_easy: 44.3951, KITTI/Overall_3D_moderate: 30.8757, KITTI/Overall_BEV_moderate: 41.9264, KITTI/Overall_2D_moderate: 42.3380, KITTI/Overall_3D_hard: 30.8294, KITTI/Overall_BEV_hard: 41.8562, KITTI/Overall_2D_hard: 42.3607
+2024-08-20 13:31:11,334 - mmdet - INFO - Epoch [4][50/322]	lr: 3.000e-03, eta: 0:38:46, time: 1.126, data_time: 0.982, memory: 1661, loss_cls: 0.2938, loss_bbox: 0.5761, loss_dir: 0.0390, loss: 0.9089, grad_norm: 1.0720
+2024-08-20 13:31:19,587 - mmdet - INFO - Epoch [4][100/322]	lr: 3.000e-03, eta: 0:37:32, time: 0.165, data_time: 0.009, memory: 1661, loss_cls: 0.2874, loss_bbox: 0.5320, loss_dir: 0.0367, loss: 0.8562, grad_norm: 1.1312
+2024-08-20 13:31:27,899 - mmdet - INFO - Epoch [4][150/322]	lr: 3.000e-03, eta: 0:36:24, time: 0.166, data_time: 0.009, memory: 1661, loss_cls: 0.2820, loss_bbox: 0.5601, loss_dir: 0.0355, loss: 0.8776, grad_norm: 1.1412
+2024-08-20 13:31:36,115 - mmdet - INFO - Epoch [4][200/322]	lr: 3.000e-03, eta: 0:35:21, time: 0.164, data_time: 0.009, memory: 1661, loss_cls: 0.2871, loss_bbox: 0.5470, loss_dir: 0.0361, loss: 0.8701, grad_norm: 1.2033
+2024-08-20 13:31:44,531 - mmdet - INFO - Epoch [4][250/322]	lr: 3.000e-03, eta: 0:34:23, time: 0.168, data_time: 0.010, memory: 1661, loss_cls: 0.2726, loss_bbox: 0.5171, loss_dir: 0.0332, loss: 0.8230, grad_norm: 1.1564
+2024-08-20 13:31:52,807 - mmdet - INFO - Epoch [4][300/322]	lr: 3.000e-03, eta: 0:33:29, time: 0.166, data_time: 0.009, memory: 1661, loss_cls: 0.2711, loss_bbox: 0.5253, loss_dir: 0.0320, loss: 0.8284, grad_norm: 1.1552
+2024-08-20 13:31:57,556 - mmdet - INFO - Saving checkpoint at 4 epochs
+2024-08-20 13:33:02,700 - mmdet - INFO - 
+Pedestrian AP40@0.50, 0.50, 0.50:
+bbox AP:25.0151, 25.1157, 24.8744
+bev  AP:19.1148, 19.3668, 19.3494
+3d   AP:11.4510, 11.1227, 11.1081
+aos  AP:24.04, 24.27, 24.05
+Pedestrian AP40@0.25, 0.25, 0.25:
+bbox AP:39.6799, 45.9092, 45.9527
+bev  AP:37.4277, 39.3430, 39.3445
+3d   AP:29.5338, 30.5487, 30.5171
+aos  AP:37.10, 43.17, 43.24
+Cyclist AP40@0.50, 0.50, 0.50:
+bbox AP:38.6462, 38.1427, 35.5755
+bev  AP:21.2875, 21.3992, 21.3978
+3d   AP:9.2040, 8.2850, 8.2265
+aos  AP:38.09, 37.56, 35.11
+Cyclist AP40@0.25, 0.25, 0.25:
+bbox AP:56.7248, 55.3371, 55.4140
+bev  AP:52.6043, 53.2112, 53.3223
+3d   AP:47.4331, 45.2855, 45.2219
+aos  AP:54.73, 53.57, 53.47
+Car AP40@0.50, 0.50, 0.50:
+bbox AP:45.7462, 36.0977, 35.9653
+bev  AP:49.1160, 43.6507, 41.0195
+3d   AP:39.2464, 30.1695, 29.8569
+aos  AP:44.27, 34.40, 34.28
+Car AP40@0.25, 0.25, 0.25:
+bbox AP:46.5787, 44.5218, 44.5872
+bev  AP:54.8679, 47.7228, 47.3413
+3d   AP:48.7944, 40.0941, 39.8614
+aos  AP:44.70, 41.54, 41.63
+
+Overall AP40@easy, moderate, hard:
+bbox AP:47.3836, 45.7813, 45.7774
+bev  AP:46.3827, 45.4016, 44.5621
+3d   AP:38.7378, 35.3346, 35.1986
+aos  AP:45.37, 43.71, 43.66
+
+2024-08-20 13:33:02,709 - mmdet - INFO - Exp name: vod-radarpillarnet.py
+2024-08-20 13:33:02,710 - mmdet - INFO - Epoch(val) [4][324]	KITTI/Pedestrian_3D_easy_strict: 11.4510, KITTI/Pedestrian_BEV_easy_strict: 19.1148, KITTI/Pedestrian_2D_easy_strict: 25.0151, KITTI/Pedestrian_3D_moderate_strict: 11.1227, KITTI/Pedestrian_BEV_moderate_strict: 19.3668, KITTI/Pedestrian_2D_moderate_strict: 25.1157, KITTI/Pedestrian_3D_hard_strict: 11.1081, KITTI/Pedestrian_BEV_hard_strict: 19.3494, KITTI/Pedestrian_2D_hard_strict: 24.8744, KITTI/Pedestrian_3D_easy_loose: 29.5338, KITTI/Pedestrian_BEV_easy_loose: 37.4277, KITTI/Pedestrian_2D_easy_loose: 39.6799, KITTI/Pedestrian_3D_moderate_loose: 30.5487, KITTI/Pedestrian_BEV_moderate_loose: 39.3430, KITTI/Pedestrian_2D_moderate_loose: 45.9092, KITTI/Pedestrian_3D_hard_loose: 30.5171, KITTI/Pedestrian_BEV_hard_loose: 39.3445, KITTI/Pedestrian_2D_hard_loose: 45.9527, KITTI/Cyclist_3D_easy_strict: 9.2040, KITTI/Cyclist_BEV_easy_strict: 21.2875, KITTI/Cyclist_2D_easy_strict: 38.6462, KITTI/Cyclist_3D_moderate_strict: 8.2850, KITTI/Cyclist_BEV_moderate_strict: 21.3992, KITTI/Cyclist_2D_moderate_strict: 38.1427, KITTI/Cyclist_3D_hard_strict: 8.2265, KITTI/Cyclist_BEV_hard_strict: 21.3978, KITTI/Cyclist_2D_hard_strict: 35.5755, KITTI/Cyclist_3D_easy_loose: 47.4331, KITTI/Cyclist_BEV_easy_loose: 52.6043, KITTI/Cyclist_2D_easy_loose: 56.7248, KITTI/Cyclist_3D_moderate_loose: 45.2855, KITTI/Cyclist_BEV_moderate_loose: 53.2112, KITTI/Cyclist_2D_moderate_loose: 55.3371, KITTI/Cyclist_3D_hard_loose: 45.2219, KITTI/Cyclist_BEV_hard_loose: 53.3223, KITTI/Cyclist_2D_hard_loose: 55.4140, KITTI/Car_3D_easy_strict: 39.2464, KITTI/Car_BEV_easy_strict: 49.1160, KITTI/Car_2D_easy_strict: 45.7462, KITTI/Car_3D_moderate_strict: 30.1695, KITTI/Car_BEV_moderate_strict: 43.6507, KITTI/Car_2D_moderate_strict: 36.0977, KITTI/Car_3D_hard_strict: 29.8569, KITTI/Car_BEV_hard_strict: 41.0195, KITTI/Car_2D_hard_strict: 35.9653, KITTI/Car_3D_easy_loose: 48.7944, KITTI/Car_BEV_easy_loose: 54.8679, KITTI/Car_2D_easy_loose: 46.5787, KITTI/Car_3D_moderate_loose: 40.0941, KITTI/Car_BEV_moderate_loose: 47.7228, KITTI/Car_2D_moderate_loose: 44.5218, KITTI/Car_3D_hard_loose: 39.8614, KITTI/Car_BEV_hard_loose: 47.3413, KITTI/Car_2D_hard_loose: 44.5872, KITTI/Overall_3D_easy: 38.7378, KITTI/Overall_BEV_easy: 46.3827, KITTI/Overall_2D_easy: 47.3836, KITTI/Overall_3D_moderate: 35.3346, KITTI/Overall_BEV_moderate: 45.4016, KITTI/Overall_2D_moderate: 45.7813, KITTI/Overall_3D_hard: 35.1986, KITTI/Overall_BEV_hard: 44.5621, KITTI/Overall_2D_hard: 45.7774
+2024-08-20 13:33:59,463 - mmdet - INFO - Epoch [5][50/322]	lr: 3.000e-03, eta: 0:35:50, time: 1.135, data_time: 0.987, memory: 1661, loss_cls: 0.2795, loss_bbox: 0.5160, loss_dir: 0.0345, loss: 0.8300, grad_norm: 1.1627
+2024-08-20 13:34:07,166 - mmdet - INFO - Epoch [5][100/322]	lr: 3.000e-03, eta: 0:34:52, time: 0.154, data_time: 0.006, memory: 1661, loss_cls: 0.2710, loss_bbox: 0.5133, loss_dir: 0.0330, loss: 0.8173, grad_norm: 1.0988
+2024-08-20 13:34:14,876 - mmdet - INFO - Epoch [5][150/322]	lr: 3.000e-03, eta: 0:33:57, time: 0.154, data_time: 0.007, memory: 1661, loss_cls: 0.2786, loss_bbox: 0.5020, loss_dir: 0.0323, loss: 0.8130, grad_norm: 1.1328
+2024-08-20 13:34:22,645 - mmdet - INFO - Epoch [5][200/322]	lr: 3.000e-03, eta: 0:33:05, time: 0.155, data_time: 0.006, memory: 1661, loss_cls: 0.2688, loss_bbox: 0.5039, loss_dir: 0.0321, loss: 0.8048, grad_norm: 1.0628
+2024-08-20 13:34:31,795 - mmdet - INFO - Epoch [5][250/322]	lr: 3.000e-03, eta: 0:32:22, time: 0.183, data_time: 0.006, memory: 1661, loss_cls: 0.2683, loss_bbox: 0.5036, loss_dir: 0.0314, loss: 0.8033, grad_norm: 1.1159
+2024-08-20 13:34:39,398 - mmdet - INFO - Epoch [5][300/322]	lr: 3.000e-03, eta: 0:31:35, time: 0.152, data_time: 0.007, memory: 1661, loss_cls: 0.2564, loss_bbox: 0.4730, loss_dir: 0.0309, loss: 0.7602, grad_norm: 1.0416
+2024-08-20 13:34:43,854 - mmdet - INFO - Saving checkpoint at 5 epochs
+2024-08-20 13:35:50,188 - mmdet - INFO - 
+Pedestrian AP40@0.50, 0.50, 0.50:
+bbox AP:24.3524, 24.2612, 24.1649
+bev  AP:15.7538, 14.9199, 14.8201
+3d   AP:7.2447, 7.1866, 7.1964
+aos  AP:23.50, 23.51, 23.42
+Pedestrian AP40@0.25, 0.25, 0.25:
+bbox AP:45.3828, 49.2273, 49.3028
+bev  AP:40.5136, 42.7692, 42.6863
+3d   AP:32.7570, 33.7351, 33.6267
+aos  AP:41.73, 46.23, 46.32
+Cyclist AP40@0.50, 0.50, 0.50:
+bbox AP:34.7773, 29.6272, 29.6325
+bev  AP:23.8371, 20.1469, 20.0818
+3d   AP:14.8260, 11.8972, 11.8987
+aos  AP:34.40, 29.28, 29.27
+Cyclist AP40@0.25, 0.25, 0.25:
+bbox AP:64.0160, 58.8617, 58.9196
+bev  AP:59.0374, 55.3606, 55.4001
+3d   AP:53.4403, 46.8013, 46.7811
+aos  AP:61.63, 56.63, 56.42
+Car AP40@0.50, 0.50, 0.50:
+bbox AP:47.0007, 37.7114, 37.7422
+bev  AP:49.5115, 41.2303, 41.1717
+3d   AP:42.0012, 31.7817, 31.5673
+aos  AP:45.14, 35.45, 35.42
+Car AP40@0.25, 0.25, 0.25:
+bbox AP:49.0263, 46.6582, 46.7487
+bev  AP:55.2921, 48.2122, 48.1788
+3d   AP:48.8852, 40.1317, 39.9090
+aos  AP:46.73, 42.68, 42.78
+
+Overall AP40@easy, moderate, hard:
+bbox AP:52.1332, 48.6001, 48.6549
+bev  AP:49.6875, 46.4534, 46.4193
+3d   AP:42.7329, 37.4394, 37.3250
+aos  AP:49.50, 46.10, 46.05
+
+2024-08-20 13:35:50,199 - mmdet - INFO - Exp name: vod-radarpillarnet.py
+2024-08-20 13:35:50,199 - mmdet - INFO - Epoch(val) [5][324]	KITTI/Pedestrian_3D_easy_strict: 7.2447, KITTI/Pedestrian_BEV_easy_strict: 15.7538, KITTI/Pedestrian_2D_easy_strict: 24.3524, KITTI/Pedestrian_3D_moderate_strict: 7.1866, KITTI/Pedestrian_BEV_moderate_strict: 14.9199, KITTI/Pedestrian_2D_moderate_strict: 24.2612, KITTI/Pedestrian_3D_hard_strict: 7.1964, KITTI/Pedestrian_BEV_hard_strict: 14.8201, KITTI/Pedestrian_2D_hard_strict: 24.1649, KITTI/Pedestrian_3D_easy_loose: 32.7570, KITTI/Pedestrian_BEV_easy_loose: 40.5136, KITTI/Pedestrian_2D_easy_loose: 45.3828, KITTI/Pedestrian_3D_moderate_loose: 33.7351, KITTI/Pedestrian_BEV_moderate_loose: 42.7692, KITTI/Pedestrian_2D_moderate_loose: 49.2273, KITTI/Pedestrian_3D_hard_loose: 33.6267, KITTI/Pedestrian_BEV_hard_loose: 42.6863, KITTI/Pedestrian_2D_hard_loose: 49.3028, KITTI/Cyclist_3D_easy_strict: 14.8260, KITTI/Cyclist_BEV_easy_strict: 23.8371, KITTI/Cyclist_2D_easy_strict: 34.7773, KITTI/Cyclist_3D_moderate_strict: 11.8972, KITTI/Cyclist_BEV_moderate_strict: 20.1469, KITTI/Cyclist_2D_moderate_strict: 29.6272, KITTI/Cyclist_3D_hard_strict: 11.8987, KITTI/Cyclist_BEV_hard_strict: 20.0818, KITTI/Cyclist_2D_hard_strict: 29.6325, KITTI/Cyclist_3D_easy_loose: 53.4403, KITTI/Cyclist_BEV_easy_loose: 59.0374, KITTI/Cyclist_2D_easy_loose: 64.0160, KITTI/Cyclist_3D_moderate_loose: 46.8013, KITTI/Cyclist_BEV_moderate_loose: 55.3606, KITTI/Cyclist_2D_moderate_loose: 58.8617, KITTI/Cyclist_3D_hard_loose: 46.7811, KITTI/Cyclist_BEV_hard_loose: 55.4001, KITTI/Cyclist_2D_hard_loose: 58.9196, KITTI/Car_3D_easy_strict: 42.0012, KITTI/Car_BEV_easy_strict: 49.5115, KITTI/Car_2D_easy_strict: 47.0007, KITTI/Car_3D_moderate_strict: 31.7817, KITTI/Car_BEV_moderate_strict: 41.2303, KITTI/Car_2D_moderate_strict: 37.7114, KITTI/Car_3D_hard_strict: 31.5673, KITTI/Car_BEV_hard_strict: 41.1717, KITTI/Car_2D_hard_strict: 37.7422, KITTI/Car_3D_easy_loose: 48.8852, KITTI/Car_BEV_easy_loose: 55.2921, KITTI/Car_2D_easy_loose: 49.0263, KITTI/Car_3D_moderate_loose: 40.1317, KITTI/Car_BEV_moderate_loose: 48.2122, KITTI/Car_2D_moderate_loose: 46.6582, KITTI/Car_3D_hard_loose: 39.9090, KITTI/Car_BEV_hard_loose: 48.1788, KITTI/Car_2D_hard_loose: 46.7487, KITTI/Overall_3D_easy: 42.7329, KITTI/Overall_BEV_easy: 49.6875, KITTI/Overall_2D_easy: 52.1332, KITTI/Overall_3D_moderate: 37.4394, KITTI/Overall_BEV_moderate: 46.4534, KITTI/Overall_2D_moderate: 48.6001, KITTI/Overall_3D_hard: 37.3250, KITTI/Overall_BEV_hard: 46.4193, KITTI/Overall_2D_hard: 48.6549

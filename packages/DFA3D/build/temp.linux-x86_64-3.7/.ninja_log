@@ -1,0 +1,7 @@
+# ninja log v5
+2	9635	1737022323745000489	/home/bxk/CODE-40903-PhD-2/LGDD/packages/DFA3D/build/temp.linux-x86_64-3.7/dfa3D/ops/csrc/cuda/cudabind.o	495887077b88dce
+2	9948	1737022324045001893	/home/bxk/CODE-40903-PhD-2/LGDD/packages/DFA3D/build/temp.linux-x86_64-3.7/dfa3D/ops/csrc/cuda/ms_depth_score_sample_cuda.o	e1fdefc2d64060a6
+0	10167	1737022324273002961	/home/bxk/CODE-40903-PhD-2/LGDD/packages/DFA3D/build/temp.linux-x86_64-3.7/dfa3D/ops/csrc/ms_depth_score_sample.o	b29dae098ab6e30a
+1	10640	1737022324749005189	/home/bxk/CODE-40903-PhD-2/LGDD/packages/DFA3D/build/temp.linux-x86_64-3.7/dfa3D/ops/csrc/wms_deform_attn.o	d4cb6374ceead442
+2	12703	1737022326797014776	/home/bxk/CODE-40903-PhD-2/LGDD/packages/DFA3D/build/temp.linux-x86_64-3.7/dfa3D/ops/csrc/cuda/wms_deform_attn_cuda.o	8efcd92c67e4821b
+1	17770	1737022331869038520	/home/bxk/CODE-40903-PhD-2/LGDD/packages/DFA3D/build/temp.linux-x86_64-3.7/dfa3D/ops/csrc/pybind.o	5e9e647275973053

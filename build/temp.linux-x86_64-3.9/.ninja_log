@@ -1,0 +1,10 @@
+# ninja log v5
+1	1671	1737249766081606819	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.9/packages/Voxelization/bev_pool/src/bev_pool_cuda.o	5ec5cd7c1ab4a186
+0	15270	1737249779665674241	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.9/packages/Voxelization/bev_pool/src/bev_pool.o	51074918547d8542
+6	11291	1737249791297731410	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.9/packages/Voxelization/voxel/src/voxelization_cpu.o	f6d47216bbb220b6
+5	12059	1737249792065735167	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.9/packages/Voxelization/voxel/src/scatter_points_cpu.o	d35f88bd8695d1b1
+6	12098	1737249792105735363	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.9/packages/Voxelization/voxel/src/voxelization.o	14e92e7a0adedef6
+5	33094	1737249813089837155	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.9/packages/Voxelization/voxel/src/scatter_points_cuda.o	d058cf440fb3b01a
+7	33649	1737249813641839811	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.9/packages/Voxelization/voxel/src/voxelization_cuda.o	bfe8f6cf06839d6e
+7	652	1737249815893850636	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.9/packages/Voxelization/bev_pool_v2/src/bev_pool_cuda.o	46b85490d0ee44cc
+7	11196	1737249826429901039	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.9/packages/Voxelization/bev_pool_v2/src/bev_pool.o	9a0a083b49b6bf54

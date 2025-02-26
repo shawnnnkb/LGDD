@@ -1,0 +1,20 @@
+# ninja log v5
+1	11174	1737250665079890694	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/spconv/src/reordering.o	6d22eff44aa6a39f
+1	11421	1737250665315901744	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/spconv/src/maxpool.o	96133b2a0900336f
+0	12856	1737250666747968735	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/spconv/src/indice.o	34ad30fefd4abdb8
+2	17166	1737250671064169717	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/spconv/src/reordering_cuda.o	387d8b97193194
+1	17483	1737250671392184927	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/spconv/src/maxpool_cuda.o	c0ebeba3d8a433ba
+0	17984	1737250671880207556	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/spconv/src/indice_cuda.o	659bdbc148740cac
+0	28655	1737250682548697754	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/spconv/src/all.o	14f1f8023690b487
+5	2525	1737250685756843539	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/iou3d/src/iou3d_kernel.o	c0bd157e5ee9b892
+5	21279	1737250704485679918	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/iou3d/src/iou3d.o	d0d0849b460c9e59
+3	17145	1737250722286452198	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/voxel/src/scatter_points_cuda.o	ef3711b611f3bbb4
+4	20078	1737250725226577685	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/voxel/src/voxelization_cuda.o	a8c9a20d5f3a9bf1
+4	21607	1737250726746642333	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/voxel/src/voxelization.o	af21b7ed262c91ed
+4	22895	1737250728030696831	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/voxel/src/voxelization_cpu.o	9e77e64302350767
+3	23795	1737250728938735299	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/voxel/src/scatter_points_cpu.o	8a56e8152f81094c
+8	18986	1737250748587554465	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/roiaware_pool3d/src/roiaware_pool3d_kernel.o	5142d055d3b29bfb
+8	20704	1737250750307624988	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/roiaware_pool3d/src/points_in_boxes_cuda.o	ed88c0f7da824a5c
+8	23013	1737250752595718508	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/roiaware_pool3d/src/roiaware_pool3d.o	c98817cb2049cca6
+7	23333	1737250752915731566	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/roiaware_pool3d/src/points_in_boxes_cpu.o	b712bb1e78f3ab95
+2	674	1737250754147781759	/home/bxk/CODE-40903-PhD-2/LGDD/build/temp.linux-x86_64-3.8/mmdet3d/ops/ball_query/src/ball_query_cuda.o	a26f67f768433dc7
