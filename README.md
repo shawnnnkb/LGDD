@@ -46,6 +46,8 @@ Many thanks to these exceptional open source projects:
 - [VoxFormer](https://github.com/NVlabs/VoxFormer.git)
 - [OccFormer](https://github.com/zhangyp15/OccFormer.git)
 - [CGFormer](https://github.com/pkqbajng/CGFormer)
+- [SGDet3D](https://github.com/shawnnnkb/SGDet3D)
+- [SST](https://github.com/TuSimple/SST)
 
 As it is not possible to list all the projects of the reference papers. If you find we leave out your repo, please contact us and we'll update the lists.
 
@@ -57,4 +59,4 @@ If you find our work beneficial for your research, please consider citing our pa
 
 ![View-of-Delft](./docs/all_Figures/Visualization.png)
 
-Some visualization results on the VoD validation set (first row) and TJ4DRadSet test set (second row). Each figure corresponds to a frame of data containing an image and radar points (gray), with the red triangle marking the ego-vehicle position. Orange and yellow boxes represent ground-truths in the perspective and bird’s-eye views, respectively. Green and blue boxes indicate predicted bounding boxes from LGDD, and the bottom left shows BEV feature map visualizations. Figures (a), (b), and (c) demonstrate the detection performance of LGDD on cars, cyclists, and pedestrians of VoD, respectively. Figures (d), (e), and (f) illustrate the robustness of LGDD in the complex environments of the TJ4DRadSet, such as low-light nighttime conditions and out-of-focus scenarios. Better zoom in for details.
+Figures (a), (b), and (c) show some visualization results on the VoD \cite{VoD} validation set, while (d), (e), and (f) show results on the TJ4DRadSet \cite{TJ4DRadSet} test set. Orange and yellow boxes represent ground truths in the perspective and bird's-eye views, respectively, while blue and green boxes indicate predicted bounding boxes in the corresponding views. The first and second figures compare the baseline with our LGDD \cite{RCFusion}, while the third visualizes LGDD's detection on the image plane. Better zoom in for details.
