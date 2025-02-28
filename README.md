@@ -5,6 +5,8 @@
 - **2025.03.01** Code v1.0 released
 - **2025.02.28** Submit to IROS 2025
 
+<video width="1000" height="480" controls> <source src="docs/all_Figures/LGDD-demo.mp4" type="video/mp4">Your browser does not support the video tag.</video>
+
 ## 📜 Abstract
  
 4D millimeter-wave radar plays a pivotal role in autonomous driving due to its cost-effectiveness and robustness in adverse weather. However, the application of 4D radar point cloud in 3D perception tasks is hindered by its inherent sparsity and noise. To address these challenges, we propose LGDD, a novel local-global synergistic dual-branch 3D object detection framework using 4D radar. Specifically, we first introduce a point-based branch, which utilize a voxel-attended point feature extractor (VPE) to integrate semantic segmentation with cluster voting, thereby mitigating radar noise and extracting local-clustered instances features. Then, for the conventional pillar-based branch, we design a query-based feature pre-fusion (QFP) to address the sparsity and enhance global context representation. Additionally, we devise a proposal mask to filter out noisy points, enabling more focused clustering on regions of interest. Finally, we align the local instances with global context through semantics-geometry aware fusion (SGF) module to achieve comprehensive scene understanding. Extensive experiments demonstrate that LGDD achieves state-of-the-art performance on the public View-of-Delft and TJ4DRadSet datasets.
