@@ -36,17 +36,17 @@ We retrained the model and achieved better performance compared to the results r
 | Datasets                                                     | Metric 1       | Metric2       | Details       |
 | :----------------------------------------------------------: | :------------: | :-----------: | :-----------: |
 | **VoD**                                                      | **EAA 3D mAP** | **DC 3D mAP** | **Weights**   |
-| Baseline                                                     |    46.01       |   65.86       |        -      |   
+| Baseline                                                     |    46.01       |   65.86       | [Link]()      |   
 | [LGDD](projects/LGDD/configs/vod-LGDD_2x4_24e.py)            |    53.49       |   72.20       | [Link]()      | 
 | **TJ4D**                                                     | **EAA 3D mAP** | **DC 3D mAP** | **Weights**   |
-| Baseline                                                     |    30.37       |   39.24       |        -      |           
+| Baseline                                                     |    30.37       |   39.24       | [Link]()      |           
 | [LGDD](projects/LGDD/configs/TJ4D-LGDD_2x4_24e.py)           |    34.02       |   42.02       | [Link]()      |
 
 ## 🐸 Visualization Results
 
 ![Visualization](./docs/all_Figures/Visualization.png)
 
-Figures (a), (b), and (c) show some visualization results on the VoD \cite{VoD} validation set, while (d), (e), and (f) show results on the TJ4DRadSet \cite{TJ4DRadSet} test set. Orange and yellow boxes represent ground truths in the perspective and bird's-eye views, respectively, while blue and green boxes indicate predicted bounding boxes in the corresponding views. The first and second figures compare the baseline with our LGDD \cite{RCFusion}, while the third visualizes LGDD's detection on the image plane. Better zoom in for details.
+Figures (a), (b), and (c) show some visualization results on the VoD \cite{VoD} validation set, while (d), (e), and (f) show results on the TJ4DRadSet \cite{TJ4DRadSet} test set. Orange and yellow boxes represent ground truths in the perspective and bird's-eye views, respectively, while blue and green boxes indicate predicted bounding boxes in the corresponding views. The first and second figures compare the baseline with our LGDD \cite{RCFusion}, while the third visualizes LGDD's detection on the image plane. Attention is drawn to the purple region, which delineates areas of false positives, false negatives, or imprecise bounding box in the baseline. Better zoom in for details.
 
 ### 😙 Acknowledgement
 
