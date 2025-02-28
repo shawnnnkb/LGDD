@@ -39,7 +39,7 @@ def parse_args():
     parser.add_argument(
         '--eval',
         type=str,
-        default='mAP', # for debugging
+        # default='mAP', # for debugging
         nargs='+',
         help='evaluation metrics, which depends on the dataset, e.g., "bbox",'
         ' "segm", "proposal" for COCO, and "mAP", "recall" for PASCAL VOC')
@@ -118,7 +118,7 @@ def main():
     cfg = Config.fromfile(args.config)
     # wandb init after runner set up main process  
     project = args.config.split('/')[-1].split('.')[0]
-    if 'vod' in project.lower():
+    if 'vod' in project.lower() and not 'pillar' in project.lower():
         src_path = 'tools_det3d/eval_tools/vod-eval.py'
         dst_path = 'mmdet3d/core/evaluation/kitti_utils/eval.py'
         shutil.copy(src_path, dst_path)
@@ -126,7 +126,7 @@ def main():
         dst_path = 'mmdet3d/datasets/kitti_dataset.py'
         shutil.copy(src_path, dst_path)
         print('USING EVAL TOOLS OF VOD DATASET')
-    if 'tj4d' in project.lower():
+    if 'tj4d' in project.lower() and not 'pillar' in project.lower():
         src_path = 'tools_det3d/eval_tools/TJ4D-eval.py'
         dst_path = 'mmdet3d/core/evaluation/kitti_utils/eval.py'
         shutil.copy(src_path, dst_path)

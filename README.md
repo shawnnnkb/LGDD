@@ -14,7 +14,7 @@ Performance-latency comparison on the View-of-Delft (left) and TJ4DRadaSet (righ
 
 ![overview](./docs/all_Figures/Framework.png)
 
-Architecture of our LGDD neural network. (a) The feature extraction module extract radar and image features. (b) The dual-branch fusion module fully leverages rich radar geometry for image branch and rich image semantics for radar branch, ultimately lifting the features into the unified BEV space. (c) The object-oriented attention module uses cross-attention to further enhance the featurization of the cross-modal BEV queries by deeply interacting with interested image tokens. (d) The object detection head. Dashed line represents the deep utilization of cross-modal information.
+Overall architecture of our LGDD. (a) The pillar-based branch first pillarizes the 4D radar and extracts sparse pillars using RadarPillarNet \cite{RCFusion}. Then QFP aggregates the sparse point-wise features, with the updated pillars being passed into the 2D backbone for global context generation. (b) The point-based branch utilizes a sparse voxel feature extractor to facilitate feature extraction and obtain point-wise features via VPE. Then, semantic segmentation is integrated with cluster voting \cite{VoteNet} to generate local instances features. (c) In the fusion and detection stage, the SGF aligns features from both branches to achieve comprehensive scene understanding.
 
 ## 🍁 Quantitative Results
 
@@ -34,14 +34,14 @@ step 3. Refer to [train_and_eval.md](./docs/Guidance/train_and_eval.md) for trai
 
 We retrained the model and achieved better performance compared to the results reported in the tables of the paper. We provide the checkpoints on View-of-delft (VoD) and TJ4DRadSet datasets, reproduced with the released codebase.
 
-| Datasets                                                     | Metric 1       | Metric2       | Details       |
-| :----------------------------------------------------------: | :------------: | :-----------: | :-----------: |
-| **VoD**                                                      | **EAA 3D mAP** | **DC 3D mAP** | **Weights**   |
-| Baseline                                                     |    46.01       |   65.86       | [Link]()      |   
-| [LGDD](projects/LGDD/configs/vod-LGDD_2x4_24e.py)            |    53.49       |   72.20       | [Link]()      | 
-| **TJ4D**                                                     | **EAA 3D mAP** | **DC 3D mAP** | **Weights**   |
-| Baseline                                                     |    30.37       |   39.24       | [Link]()      |           
-| [LGDD](projects/LGDD/configs/TJ4D-LGDD_2x4_24e.py)           |    34.02       |   42.02       | [Link]()      |
+| Datasets                                                                    | Metric 1       | Metric2       | Details       |
+| :-------------------------------------------------------------------------: | :------------: | :-----------: | :-----------: |
+| **VoD**                                                                     | **EAA 3D mAP** | **DC 3D mAP** | **Weights**   |
+| [Baseline](projects/RadarPillarNet/configs/VoD-radarpillarnet_4x1_80e.py)   |    46.01       |   65.86       | [Link](https://github.com/shawnnnkb/LGDD/releases/download/weights-and-checkpoints/final_ckpt.zip)|   
+| [LGDD](projects/LGDD/configs/vod-LGDD_2x4_24e.py)                           |    53.49       |   72.20       | [Link](https://github.com/shawnnnkb/LGDD/releases/download/weights-and-checkpoints/final_ckpt.zip)| 
+| **TJ4D**                                                                    | **EAA 3D mAP** | **DC 3D mAP** | **Weights**   |
+| [Baseline](projects/RadarPillarNet/configs/TJ4D-radarpillarnet_4x4_20e.py)  |    30.37       |   39.24       | [Link](https://github.com/shawnnnkb/LGDD/releases/download/weights-and-checkpoints/final_ckpt.zip)|           
+| [LGDD](projects/LGDD/configs/TJ4D-LGDD_2x4_24e.py)                          |    34.02       |   42.02       | [Link](https://github.com/shawnnnkb/LGDD/releases/download/weights-and-checkpoints/final_ckpt.zip)|
 
 ## 🐸 Visualization Results
 

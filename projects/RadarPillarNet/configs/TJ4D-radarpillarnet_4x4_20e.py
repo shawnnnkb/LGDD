@@ -2,10 +2,10 @@
 custom_imports = dict(imports=['projects.RadarPillarNet.mmdet3d_plugin'])
 
 # dataset settings
-dataset_type = 'KittiDataset'
-data_root = './data/VoD/radar_5frames/'
-class_names = ['Pedestrian', 'Cyclist', 'Car']
-point_cloud_range = [0, -25.6, -3, 51.2, 25.6, 2]
+dataset_type = 'TJ4DDataset'
+data_root = './data/TJ4D/'
+class_names = ['Pedestrian', 'Cyclist', 'Car','Truck']
+point_cloud_range = [0, -39.68, -4, 69.12, 39.68, 2]
 input_modality = dict(use_lidar=True, use_camera=False)
 file_client_args = dict(backend='disk')
 
@@ -31,7 +31,7 @@ model = dict(
         legacy=False,
         with_velocity_snr_center=True,),
     middle_encoder=dict(
-        type='PointPillarsScatter', in_channels=base_channels, output_shape=[320, 320]),
+        type='PointPillarsScatter', in_channels=base_channels, output_shape=[992, 864]),
     backbone=dict(
         type='SECOND',
         in_channels=base_channels,
@@ -45,21 +45,24 @@ model = dict(
         out_channels=[128, 128, 128]),
     bbox_head=dict(
         type='Anchor3DHead',
-        num_classes=3,
+        num_classes=len(class_names),
         in_channels=384,
         feat_channels=384,
         use_direction_classifier=True,
         anchor_generator=dict(
             type='Anchor3DRangeGenerator',
             ranges=[
-                [0, -25.6, -0.6, 51.2, 25.6, -0.6],
-                [0, -25.6, -0.6, 51.2, 25.6, -0.6],
-                [0, -25.6, -1.78, 51.2, 25.6, -1.78],
+                [0, -40.0, -1.163, 70.4, 40.0, -1.163],
+                [0, -40.0, -1.353, 70.4, 40.0, -1.353],
+                [0, -40.0, -1.363, 70.4, 40.0, -1.363],
+                [0, -40.0, -1.403, 70.4, 40.0, -1.403],
             ],
-            sizes=[[0.6, 0.8, 1.73], [0.6, 1.76, 1.73], [1.6, 3.9, 1.56]],
+            sizes=[[0.6, 0.8, 1.69], [0.78, 1.77, 1.60], [1.84, 4.56, 1.70],[2.66, 10.76, 3.47]],
             rotations=[0, 1.57],
             reshape_out=False),
+        assigner_per_size=True,
         diff_rad_by_sin=True,
+        assign_per_class=True,
         bbox_coder=dict(type='DeltaXYZWLHRBBoxCoder'),
         loss_cls=dict(
             type='FocalLoss',
@@ -68,31 +71,40 @@ model = dict(
             alpha=0.25,
             loss_weight=1.0),
         loss_bbox=dict(type='SmoothL1Loss', beta=1.0 / 9.0, loss_weight=2.0),
-        loss_dir=dict(type='CrossEntropyLoss', use_sigmoid=False, loss_weight=0.2)),
+        loss_dir=dict(
+            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=0.2)),
     # model training and testing settings
     train_cfg=dict(
         assigner=[
             dict(  # for Pedestrian
                 type='MaxIoUAssigner',
                 iou_calculator=dict(type='BboxOverlapsNearest3D'),
-                pos_iou_thr=0.5,
-                neg_iou_thr=0.35,
-                min_pos_iou=0.35,
+                pos_iou_thr=0.35,
+                neg_iou_thr=0.2,
+                min_pos_iou=0.2,
                 ignore_iof_thr=-1),
             dict(  # for Cyclist
                 type='MaxIoUAssigner',
                 iou_calculator=dict(type='BboxOverlapsNearest3D'),
-                pos_iou_thr=0.5,
-                neg_iou_thr=0.35,
-                min_pos_iou=0.35,
+                pos_iou_thr=0.35,
+                neg_iou_thr=0.2,
+                min_pos_iou=0.2,
                 ignore_iof_thr=-1),
             dict(  # for Car
                 type='MaxIoUAssigner',
                 iou_calculator=dict(type='BboxOverlapsNearest3D'),
-                pos_iou_thr=0.6,
-                neg_iou_thr=0.45,
-                min_pos_iou=0.45,
-                ignore_iof_thr=-1)],
+                pos_iou_thr=0.5,
+                neg_iou_thr=0.35,
+                min_pos_iou=0.35,
+                ignore_iof_thr=-1),
+            dict(  # for Truck
+                type='MaxIoUAssigner',
+                iou_calculator=dict(type='BboxOverlapsNearest3D'),
+                pos_iou_thr=0.5,
+                neg_iou_thr=0.35,
+                min_pos_iou=0.35,
+                ignore_iof_thr=-1),
+        ],
         allowed_border=0,
         pos_weight=-1,
         debug=False),
@@ -107,7 +119,7 @@ model = dict(
 
 # pipline settings
 train_pipeline = [
-    dict(type='LoadPointsFromFile', coord_type='LIDAR', load_dim=7, use_dim=[0,1,2,3,5], file_client_args=file_client_args),
+    dict(type='LoadPointsFromFile', coord_type='LIDAR', load_dim=8, use_dim=[0,1,2,3,5], file_client_args=file_client_args),
     dict(type='LoadAnnotations3D', with_bbox_3d=True, with_label_3d=True,file_client_args=file_client_args),
     dict(type='RandomFlip3D', flip_ratio_bev_horizontal=0.5),
     dict(type='GlobalRotScaleTrans', rot_range=[0.0, 0.0], scale_ratio_range=[0.95, 1.05]),
@@ -118,8 +130,8 @@ train_pipeline = [
     dict(type='Collect3D', keys=['points', 'gt_bboxes_3d', 'gt_labels_3d'])
 ]
 test_pipeline = [
-    dict(type='LoadPointsFromFile', coord_type='LIDAR', load_dim=7, use_dim=[0,1,2,3,5], file_client_args=file_client_args),
-    dict(type='MultiScaleFlipAug3D', img_scale=(1936, 1216), pts_scale_ratio=1, flip=False,
+    dict(type='LoadPointsFromFile', coord_type='LIDAR', load_dim=8, use_dim=[0,1,2,3,5], file_client_args=file_client_args),
+    dict(type='MultiScaleFlipAug3D', img_scale=(1280, 960), pts_scale_ratio=1, flip=False,
         transforms=[
             dict(type='GlobalRotScaleTrans', rot_range=[0.0, 0.0], scale_ratio_range=[1.0, 1.0], translation_std=[0.0, 0.0, 0.0]),
             dict(type='RandomFlip3D'),
@@ -128,7 +140,7 @@ test_pipeline = [
             dict(type='Collect3D', keys=['points'])])
 ]
 eval_pipeline = [
-    dict( type='LoadPointsFromFile', coord_type='LIDAR', load_dim=7, use_dim=[0,1,2,3,5], file_client_args=file_client_args),
+    dict( type='LoadPointsFromFile', coord_type='LIDAR', load_dim=8, use_dim=[0,1,2,3,5], file_client_args=file_client_args),
     dict( type='DefaultFormatBundle3D', class_names=class_names, with_label=False),
     dict(type='Collect3D', keys=['points'])
 ]
@@ -143,7 +155,7 @@ data = dict(
         dataset=dict(
             type=dataset_type,
             data_root=data_root,
-            ann_file=data_root + 'vod_infos_train.pkl',
+            ann_file=data_root + 'TJ4D_infos_train.pkl',
             split='training',
             pts_prefix='velodyne_reduced',
             pipeline=train_pipeline,
@@ -156,7 +168,7 @@ data = dict(
     val=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file=data_root + 'vod_infos_val.pkl',
+        ann_file=data_root + 'TJ4D_infos_val.pkl',
         split='training',
         pts_prefix='velodyne_reduced',
         pipeline=test_pipeline,
@@ -167,7 +179,7 @@ data = dict(
     test=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file=data_root + 'vod_infos_val.pkl',
+        ann_file=data_root + 'TJ4D_infos_val.pkl',
         split='training',
         pts_prefix='velodyne_reduced',
         pipeline=test_pipeline,
@@ -177,7 +189,7 @@ data = dict(
         box_type_3d='LiDAR'))
 
 # Training settings
-max_epochs = 80
+max_epochs = 20
 lr = 0.003
 optimizer = dict(type='AdamW', lr=lr, betas=(0.95, 0.99), weight_decay=0.01)
 optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
@@ -208,7 +220,7 @@ dist_params = dict(backend='nccl')
 log_level = 'INFO'
 
 # You may need to download the model first is the network is unstable
-load_from = None
+load_from = 'projects/RadarPillarNet/checkpoints/VoD-baseline.pth'
+load_radar_from = None
 resume_from = None
 workflow = [('train', 1)]
-

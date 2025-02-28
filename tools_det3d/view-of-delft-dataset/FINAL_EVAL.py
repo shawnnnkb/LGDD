@@ -63,5 +63,5 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
     print(args.pred_results)
-    eval_results(test_root=os.path.join('./data/VoD', 'radar_5frames', 'testing'), pred_results='tools_det3d/view-of-delft-dataset/pred_results/vod-LGDDpts_bbox')
+    eval_results(test_root=os.path.join('./data/VoD', 'radar_5frames', 'testing'), pred_results=args.pred_results)
     # Visualization_2D(data_root, output_dir='visualization_output', pred_dir=None)

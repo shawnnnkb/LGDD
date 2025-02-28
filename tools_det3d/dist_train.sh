@@ -25,8 +25,4 @@ python -m torch.distributed.launch \
     
 # NOTE: remind train epochs in config file
 # nohup python -u ./tools_det3d/train.py --config ./projects/LGDD/configs/vod-LGDD_baseline_4x1_80e.py > vod-LGDD_baseline_4x1_80e.log 2>&1 &
-# nohup bash ./tools_det3d/dist_train.sh ./projects/LGDD/configs/vod-ssad_2x4_24e.py 4 > vod-ssad_2x4_24e.log 2>&1 &
-# nohup bash ./tools_det3d/dist_train.sh ./projects/LGDD/configs/vod-ssad_2x4_radar_24e.py 4 > vod-ssad_2x4_24e.log 2>&1 &
-# nohup bash ./tools_det3d/dist_train.sh ./projects/LGDD/configs/vod-ssad_loadpretrainfrom_2x4_24e.py 4 > vod-ssad_loadpretrainfrom_2x4_24e.log 2>&1 &
-# nohup bash ./tools_det3d/dist_train.sh ./projects/LGDD/configs/vod-unet_seg_pretrain_4x4_24e.py 4 > vod-ssad_unet_segpretrain_4x4_20e.log 2>&1 &
-# nohup bash ./tools_det3d/dist_train.sh ./projects/LGDD/configs/vod-ssad_2x4_radar_24e_bxk_test.py 4 > vod-ssad_2x4_radar_24e_bxk_test.log 2>&1 &
+# nohup bash ./tools_det3d/dist_train.sh ./projects/RadarPillarNet/configs/TJ4D-radarpillarnet_4x4_20e.py 4 > TJ4D-radarpillarnet_4x4_20e.log 2>&1 &

@@ -1,0 +1,613 @@
+nohup: ignoring input
+/home/bxk/.conda/envs/LGDD/lib/python3.7/site-packages/torch/distributed/launch.py:186: FutureWarning: The module torch.distributed.launch is deprecated
+and will be removed in future. Use torch.distributed.run.
+Note that --use_env is set by default in torch.distributed.run.
+If your script expects `--local_rank` argument to be set, please
+change it to read from `os.environ['LOCAL_RANK']` instead. See 
+https://pytorch.org/docs/stable/distributed.html#launch-utility for 
+further instructions
+
+  FutureWarning,
+WARNING:torch.distributed.run:*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+2025-02-28 14:42:06,025 - mmdet - INFO - Environment info:
+------------------------------------------------------------
+sys.platform: linux
+Python: 3.7.16 (default, Jan 17 2023, 22:20:44) [GCC 11.2.0]
+CUDA available: True
+GPU 0,1,2,3: NVIDIA GeForce RTX 4090
+CUDA_HOME: /usr/local/cuda
+NVCC: Build cuda_11.8.r11.8/compiler.31833905_0
+GCC: gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
+PyTorch: 1.9.1+cu111
+PyTorch compiling details: PyTorch built with:
+  - GCC 7.3
+  - C++ Version: 201402
+  - Intel(R) Math Kernel Library Version 2020.0.0 Product Build 20191122 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v2.1.2 (Git Hash 98be7e8afa711dc9b66c8ff3504129cb82013cdb)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 11.1
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86
+  - CuDNN 8.0.5
+  - Magma 2.5.2
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=11.1, CUDNN_VERSION=8.0.5, CXX_COMPILER=/opt/rh/devtoolset-7/root/usr/bin/c++, CXX_FLAGS= -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_KINETO -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_VERSION=1.9.1, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, 
+
+TorchVision: 0.10.1+cu111
+OpenCV: 4.11.0
+MMCV: 1.4.0
+MMCV Compiler: GCC 7.3
+MMCV CUDA Compiler: 11.1
+MMDetection: 2.14.0
+MMSegmentation: 0.14.1
+MMDetection3D: 0.17.0+0bbe9c5
+------------------------------------------------------------
+
+2025-02-28 14:42:06,785 - mmdet - INFO - Distributed training: True
+2025-02-28 14:42:07,501 - mmdet - INFO - Config:
+custom_imports = dict(imports=['projects.RadarPillarNet.mmdet3d_plugin'])
+dataset_type = 'TJ4DDataset'
+data_root = './data/TJ4D/'
+class_names = ['Pedestrian', 'Cyclist', 'Car', 'Truck']
+point_cloud_range = [0, -39.68, -4, 69.12, 39.68, 2]
+input_modality = dict(use_lidar=True, use_camera=False)
+file_client_args = dict(backend='disk')
+base_channels = 64
+voxel_size = [0.16, 0.16, 5]
+model = dict(
+    type='VoxelNet',
+    voxel_layer=dict(
+        max_num_points=10,
+        point_cloud_range=[0, -39.68, -4, 69.12, 39.68, 2],
+        voxel_size=[0.16, 0.16, 5],
+        max_voxels=(16000, 40000)),
+    voxel_encoder=dict(
+        type='RadarPillarFeatureNet',
+        in_channels=5,
+        feat_channels=[64],
+        with_distance=False,
+        voxel_size=[0.16, 0.16, 5],
+        point_cloud_range=[0, -39.68, -4, 69.12, 39.68, 2],
+        legacy=False,
+        with_velocity_snr_center=True),
+    middle_encoder=dict(
+        type='PointPillarsScatter', in_channels=64, output_shape=[992, 864]),
+    backbone=dict(
+        type='SECOND',
+        in_channels=64,
+        layer_nums=[3, 5, 5],
+        layer_strides=[2, 2, 2],
+        out_channels=[64, 128, 256]),
+    neck=dict(
+        type='SECONDFPN',
+        in_channels=[64, 128, 256],
+        upsample_strides=[1, 2, 4],
+        out_channels=[128, 128, 128]),
+    bbox_head=dict(
+        type='Anchor3DHead',
+        num_classes=4,
+        in_channels=384,
+        feat_channels=384,
+        use_direction_classifier=True,
+        anchor_generator=dict(
+            type='Anchor3DRangeGenerator',
+            ranges=[[0, -40.0, -1.163, 70.4, 40.0, -1.163],
+                    [0, -40.0, -1.353, 70.4, 40.0, -1.353],
+                    [0, -40.0, -1.363, 70.4, 40.0, -1.363],
+                    [0, -40.0, -1.403, 70.4, 40.0, -1.403]],
+            sizes=[[0.6, 0.8, 1.69], [0.78, 1.77, 1.6], [1.84, 4.56, 1.7],
+                   [2.66, 10.76, 3.47]],
+            rotations=[0, 1.57],
+            reshape_out=False),
+        assigner_per_size=True,
+        diff_rad_by_sin=True,
+        assign_per_class=True,
+        bbox_coder=dict(type='DeltaXYZWLHRBBoxCoder'),
+        loss_cls=dict(
+            type='FocalLoss',
+            use_sigmoid=True,
+            gamma=2.0,
+            alpha=0.25,
+            loss_weight=1.0),
+        loss_bbox=dict(
+            type='SmoothL1Loss', beta=0.1111111111111111, loss_weight=2.0),
+        loss_dir=dict(
+            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=0.2)),
+    train_cfg=dict(
+        assigner=[
+            dict(
+                type='MaxIoUAssigner',
+                iou_calculator=dict(type='BboxOverlapsNearest3D'),
+                pos_iou_thr=0.35,
+                neg_iou_thr=0.2,
+                min_pos_iou=0.2,
+                ignore_iof_thr=-1),
+            dict(
+                type='MaxIoUAssigner',
+                iou_calculator=dict(type='BboxOverlapsNearest3D'),
+                pos_iou_thr=0.35,
+                neg_iou_thr=0.2,
+                min_pos_iou=0.2,
+                ignore_iof_thr=-1),
+            dict(
+                type='MaxIoUAssigner',
+                iou_calculator=dict(type='BboxOverlapsNearest3D'),
+                pos_iou_thr=0.5,
+                neg_iou_thr=0.35,
+                min_pos_iou=0.35,
+                ignore_iof_thr=-1),
+            dict(
+                type='MaxIoUAssigner',
+                iou_calculator=dict(type='BboxOverlapsNearest3D'),
+                pos_iou_thr=0.5,
+                neg_iou_thr=0.35,
+                min_pos_iou=0.35,
+                ignore_iof_thr=-1)
+        ],
+        allowed_border=0,
+        pos_weight=-1,
+        debug=False),
+    test_cfg=dict(
+        use_rotate_nms=True,
+        nms_across_levels=False,
+        nms_thr=0.01,
+        score_thr=0.1,
+        min_bbox_size=0,
+        nms_pre=100,
+        max_num=50))
+train_pipeline = [
+    dict(
+        type='LoadPointsFromFile',
+        coord_type='LIDAR',
+        load_dim=8,
+        use_dim=[0, 1, 2, 3, 5],
+        file_client_args=dict(backend='disk')),
+    dict(
+        type='LoadAnnotations3D',
+        with_bbox_3d=True,
+        with_label_3d=True,
+        file_client_args=dict(backend='disk')),
+    dict(type='RandomFlip3D', flip_ratio_bev_horizontal=0.5),
+    dict(
+        type='GlobalRotScaleTrans',
+        rot_range=[0.0, 0.0],
+        scale_ratio_range=[0.95, 1.05]),
+    dict(
+        type='PointsRangeFilter',
+        point_cloud_range=[0, -39.68, -4, 69.12, 39.68, 2]),
+    dict(
+        type='ObjectRangeFilter',
+        point_cloud_range=[0, -39.68, -4, 69.12, 39.68, 2]),
+    dict(type='PointShuffle'),
+    dict(
+        type='DefaultFormatBundle3D',
+        class_names=['Pedestrian', 'Cyclist', 'Car', 'Truck']),
+    dict(type='Collect3D', keys=['points', 'gt_bboxes_3d', 'gt_labels_3d'])
+]
+test_pipeline = [
+    dict(
+        type='LoadPointsFromFile',
+        coord_type='LIDAR',
+        load_dim=8,
+        use_dim=[0, 1, 2, 3, 5],
+        file_client_args=dict(backend='disk')),
+    dict(
+        type='MultiScaleFlipAug3D',
+        img_scale=(1280, 960),
+        pts_scale_ratio=1,
+        flip=False,
+        transforms=[
+            dict(
+                type='GlobalRotScaleTrans',
+                rot_range=[0.0, 0.0],
+                scale_ratio_range=[1.0, 1.0],
+                translation_std=[0.0, 0.0, 0.0]),
+            dict(type='RandomFlip3D'),
+            dict(
+                type='PointsRangeFilter',
+                point_cloud_range=[0, -39.68, -4, 69.12, 39.68, 2]),
+            dict(
+                type='DefaultFormatBundle3D',
+                class_names=['Pedestrian', 'Cyclist', 'Car', 'Truck'],
+                with_label=False),
+            dict(type='Collect3D', keys=['points'])
+        ])
+]
+eval_pipeline = [
+    dict(
+        type='LoadPointsFromFile',
+        coord_type='LIDAR',
+        load_dim=8,
+        use_dim=[0, 1, 2, 3, 5],
+        file_client_args=dict(backend='disk')),
+    dict(
+        type='DefaultFormatBundle3D',
+        class_names=['Pedestrian', 'Cyclist', 'Car', 'Truck'],
+        with_label=False),
+    dict(type='Collect3D', keys=['points'])
+]
+data = dict(
+    samples_per_gpu=4,
+    workers_per_gpu=4,
+    train=dict(
+        type='RepeatDataset',
+        times=1,
+        dataset=dict(
+            type='TJ4DDataset',
+            data_root='./data/TJ4D/',
+            ann_file='./data/TJ4D/TJ4D_infos_train.pkl',
+            split='training',
+            pts_prefix='velodyne_reduced',
+            pipeline=[
+                dict(
+                    type='LoadPointsFromFile',
+                    coord_type='LIDAR',
+                    load_dim=8,
+                    use_dim=[0, 1, 2, 3, 5],
+                    file_client_args=dict(backend='disk')),
+                dict(
+                    type='LoadAnnotations3D',
+                    with_bbox_3d=True,
+                    with_label_3d=True,
+                    file_client_args=dict(backend='disk')),
+                dict(type='RandomFlip3D', flip_ratio_bev_horizontal=0.5),
+                dict(
+                    type='GlobalRotScaleTrans',
+                    rot_range=[0.0, 0.0],
+                    scale_ratio_range=[0.95, 1.05]),
+                dict(
+                    type='PointsRangeFilter',
+                    point_cloud_range=[0, -39.68, -4, 69.12, 39.68, 2]),
+                dict(
+                    type='ObjectRangeFilter',
+                    point_cloud_range=[0, -39.68, -4, 69.12, 39.68, 2]),
+                dict(type='PointShuffle'),
+                dict(
+                    type='DefaultFormatBundle3D',
+                    class_names=['Pedestrian', 'Cyclist', 'Car', 'Truck']),
+                dict(
+                    type='Collect3D',
+                    keys=['points', 'gt_bboxes_3d', 'gt_labels_3d'])
+            ],
+            modality=dict(use_lidar=True, use_camera=False),
+            classes=['Pedestrian', 'Cyclist', 'Car', 'Truck'],
+            test_mode=False,
+            box_type_3d='LiDAR')),
+    val=dict(
+        type='TJ4DDataset',
+        data_root='./data/TJ4D/',
+        ann_file='./data/TJ4D/TJ4D_infos_val.pkl',
+        split='training',
+        pts_prefix='velodyne_reduced',
+        pipeline=[
+            dict(
+                type='LoadPointsFromFile',
+                coord_type='LIDAR',
+                load_dim=8,
+                use_dim=[0, 1, 2, 3, 5],
+                file_client_args=dict(backend='disk')),
+            dict(
+                type='MultiScaleFlipAug3D',
+                img_scale=(1280, 960),
+                pts_scale_ratio=1,
+                flip=False,
+                transforms=[
+                    dict(
+                        type='GlobalRotScaleTrans',
+                        rot_range=[0.0, 0.0],
+                        scale_ratio_range=[1.0, 1.0],
+                        translation_std=[0.0, 0.0, 0.0]),
+                    dict(type='RandomFlip3D'),
+                    dict(
+                        type='PointsRangeFilter',
+                        point_cloud_range=[0, -39.68, -4, 69.12, 39.68, 2]),
+                    dict(
+                        type='DefaultFormatBundle3D',
+                        class_names=['Pedestrian', 'Cyclist', 'Car', 'Truck'],
+                        with_label=False),
+                    dict(type='Collect3D', keys=['points'])
+                ])
+        ],
+        modality=dict(use_lidar=True, use_camera=False),
+        classes=['Pedestrian', 'Cyclist', 'Car', 'Truck'],
+        test_mode=True,
+        box_type_3d='LiDAR'),
+    test=dict(
+        type='TJ4DDataset',
+        data_root='./data/TJ4D/',
+        ann_file='./data/TJ4D/TJ4D_infos_val.pkl',
+        split='training',
+        pts_prefix='velodyne_reduced',
+        pipeline=[
+            dict(
+                type='LoadPointsFromFile',
+                coord_type='LIDAR',
+                load_dim=8,
+                use_dim=[0, 1, 2, 3, 5],
+                file_client_args=dict(backend='disk')),
+            dict(
+                type='MultiScaleFlipAug3D',
+                img_scale=(1280, 960),
+                pts_scale_ratio=1,
+                flip=False,
+                transforms=[
+                    dict(
+                        type='GlobalRotScaleTrans',
+                        rot_range=[0.0, 0.0],
+                        scale_ratio_range=[1.0, 1.0],
+                        translation_std=[0.0, 0.0, 0.0]),
+                    dict(type='RandomFlip3D'),
+                    dict(
+                        type='PointsRangeFilter',
+                        point_cloud_range=[0, -39.68, -4, 69.12, 39.68, 2]),
+                    dict(
+                        type='DefaultFormatBundle3D',
+                        class_names=['Pedestrian', 'Cyclist', 'Car', 'Truck'],
+                        with_label=False),
+                    dict(type='Collect3D', keys=['points'])
+                ])
+        ],
+        modality=dict(use_lidar=True, use_camera=False),
+        classes=['Pedestrian', 'Cyclist', 'Car', 'Truck'],
+        test_mode=True,
+        box_type_3d='LiDAR'))
+max_epochs = 20
+lr = 0.003
+optimizer = dict(type='AdamW', lr=0.003, betas=(0.95, 0.99), weight_decay=0.01)
+optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
+runner = dict(type='EpochBasedRunner', max_epochs=20)
+lr_config = dict(
+    policy='step',
+    warmup=None,
+    warmup_iters=1000,
+    warmup_ratio=0.001,
+    step=[35, 45])
+momentum_config = dict(
+    policy='cyclic',
+    target_ratio=(0.8947368421052632, 1),
+    cyclic_times=1,
+    step_ratio_up=0.4)
+evaluation = dict(
+    interval=5,
+    pipeline=[
+        dict(
+            type='LoadPointsFromFile',
+            coord_type='LIDAR',
+            load_dim=8,
+            use_dim=[0, 1, 2, 3, 5],
+            file_client_args=dict(backend='disk')),
+        dict(
+            type='DefaultFormatBundle3D',
+            class_names=['Pedestrian', 'Cyclist', 'Car', 'Truck'],
+            with_label=False),
+        dict(type='Collect3D', keys=['points'])
+    ])
+checkpoint_config = dict(interval=5)
+log_config = dict(
+    interval=50,
+    hooks=[dict(type='TextLoggerHook'),
+           dict(type='TensorboardLoggerHook')])
+dist_params = dict(backend='nccl')
+log_level = 'INFO'
+load_from = 'projects/RadarPillarNet/checkpoints/VoD-baseline.pth'
+load_radar_from = None
+resume_from = None
+workflow = [('train', 1)]
+work_dir = './work_dirs/TJ4D-radarpillarnet_4x4_20e'
+gpu_ids = range(0, 4)
+
+2025-02-28 14:42:07,502 - mmdet - INFO - Set random seed to 0, deterministic: False
+2025-02-28 14:42:07,533 - mmdet - INFO - initialize SECOND with init_cfg {'type': 'Kaiming', 'layer': 'Conv2d'}
+2025-02-28 14:42:07,553 - mmdet - INFO - initialize SECONDFPN with init_cfg [{'type': 'Kaiming', 'layer': 'ConvTranspose2d'}, {'type': 'Constant', 'layer': 'NaiveSyncBatchNorm2d', 'val': 1.0}]
+2025-02-28 14:42:07,556 - mmdet - INFO - initialize Anchor3DHead with init_cfg {'type': 'Normal', 'layer': 'Conv2d', 'std': 0.01, 'override': {'type': 'Normal', 'name': 'conv_cls', 'std': 0.01, 'bias_prob': 0.01}}
+2025-02-28 14:42:07,558 - mmdet - INFO - Model:
+VoxelNet(
+  (backbone): SECOND(
+    (blocks): ModuleList(
+      (0): Sequential(
+        (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+        (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (4): BatchNorm2d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (5): ReLU(inplace=True)
+        (6): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (7): BatchNorm2d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (8): ReLU(inplace=True)
+        (9): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (10): BatchNorm2d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (11): ReLU(inplace=True)
+      )
+      (1): Sequential(
+        (0): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+        (3): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (4): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (5): ReLU(inplace=True)
+        (6): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (7): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (8): ReLU(inplace=True)
+        (9): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (10): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (11): ReLU(inplace=True)
+        (12): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (13): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (14): ReLU(inplace=True)
+        (15): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (16): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (17): ReLU(inplace=True)
+      )
+      (2): Sequential(
+        (0): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (1): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+        (3): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (4): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (5): ReLU(inplace=True)
+        (6): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (7): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (8): ReLU(inplace=True)
+        (9): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (10): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (11): ReLU(inplace=True)
+        (12): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (13): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (14): ReLU(inplace=True)
+        (15): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (16): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (17): ReLU(inplace=True)
+      )
+    )
+  )
+  init_cfg={'type': 'Kaiming', 'layer': 'Conv2d'}
+  (neck): SECONDFPN(
+    (deblocks): ModuleList(
+      (0): Sequential(
+        (0): ConvTranspose2d(64, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+      )
+      (1): Sequential(
+        (0): ConvTranspose2d(128, 128, kernel_size=(2, 2), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+      )
+      (2): Sequential(
+        (0): ConvTranspose2d(256, 128, kernel_size=(4, 4), stride=(4, 4), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU(inplace=True)
+      )
+    )
+  )
+  init_cfg=[{'type': 'Kaiming', 'layer': 'ConvTranspose2d'}, {'type': 'Constant', 'layer': 'NaiveSyncBatchNorm2d', 'val': 1.0}]
+  (bbox_head): Anchor3DHead(
+    (loss_cls): FocalLoss()
+    (loss_bbox): SmoothL1Loss()
+    (loss_dir): CrossEntropyLoss()
+    (conv_cls): Conv2d(384, 32, kernel_size=(1, 1), stride=(1, 1))
+    (conv_reg): Conv2d(384, 56, kernel_size=(1, 1), stride=(1, 1))
+    (conv_dir_cls): Conv2d(384, 16, kernel_size=(1, 1), stride=(1, 1))
+  )
+  init_cfg={'type': 'Normal', 'layer': 'Conv2d', 'std': 0.01, 'override': {'type': 'Normal', 'name': 'conv_cls', 'std': 0.01, 'bias_prob': 0.01}}
+  (voxel_layer): Voxelization(voxel_size=[0.16, 0.16, 5], point_cloud_range=[0, -39.68, -4, 69.12, 39.68, 2], max_num_points=10, max_voxels=(16000, 40000), deterministic=True)
+  (voxel_encoder): RadarPillarFeatureNet(
+    (pfn_layers): ModuleList(
+      (0): PFNLayer_Radar(
+        (norm1): BatchNorm1d(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (norm2): BatchNorm1d(16, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (norm3): BatchNorm1d(16, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (linear1): Linear(in_features=8, out_features=32, bias=False)
+        (linear2): Linear(in_features=2, out_features=16, bias=False)
+        (linear3): Linear(in_features=2, out_features=16, bias=False)
+      )
+    )
+  )
+  (middle_encoder): PointPillarsScatter()
+)
+load_radar_from is exists, which means we load pretrained pure radar 
+model, thus need param state_dict mapping, None
+check_point_path is in valid, fail to load pretrained model
+MODEL TOTAL PARAMETERS = 4846888
+load_radar_from is exists, which means we load pretrained pure radar 
+model, thus need param state_dict mapping, None
+check_point_path is in valid, fail to load pretrained model
+MODEL TOTAL PARAMETERS = 4846888
+load_radar_from is exists, which means we load pretrained pure radar 
+model, thus need param state_dict mapping, None
+check_point_path is in valid, fail to load pretrained model
+MODEL TOTAL PARAMETERS = 4846888
+load_radar_from is exists, which means we load pretrained pure radar 
+model, thus need param state_dict mapping, None
+check_point_path is in valid, fail to load pretrained model
+MODEL TOTAL PARAMETERS = 4846888
+2025-02-28 14:42:11,775 - mmdet - INFO - load checkpoint from local path: projects/RadarPillarNet/checkpoints/VoD-baseline.pth
+2025-02-28 14:42:11,801 - mmdet - WARNING - The model and loaded state dict do not match exactly
+
+size mismatch for bbox_head.conv_cls.weight: copying a param with shape torch.Size([18, 384, 1, 1]) from checkpoint, the shape in current model is torch.Size([32, 384, 1, 1]).
+size mismatch for bbox_head.conv_cls.bias: copying a param with shape torch.Size([18]) from checkpoint, the shape in current model is torch.Size([32]).
+size mismatch for bbox_head.conv_reg.weight: copying a param with shape torch.Size([42, 384, 1, 1]) from checkpoint, the shape in current model is torch.Size([56, 384, 1, 1]).
+size mismatch for bbox_head.conv_reg.bias: copying a param with shape torch.Size([42]) from checkpoint, the shape in current model is torch.Size([56]).
+size mismatch for bbox_head.conv_dir_cls.weight: copying a param with shape torch.Size([12, 384, 1, 1]) from checkpoint, the shape in current model is torch.Size([16, 384, 1, 1]).
+size mismatch for bbox_head.conv_dir_cls.bias: copying a param with shape torch.Size([12]) from checkpoint, the shape in current model is torch.Size([16]).
+2025-02-28 14:42:11,802 - mmdet - INFO - Start running, host: bxk@amax, work_dir: /ssd/home/bxk/CODE-40902-PhD-2/LGDD/work_dirs/TJ4D-radarpillarnet_4x4_20e
+2025-02-28 14:42:11,802 - mmdet - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) StepLrUpdaterHook                  
+(HIGH        ) CyclicMomentumUpdaterHook          
+(NORMAL      ) CheckpointHook                     
+(NORMAL      ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) StepLrUpdaterHook                  
+(HIGH        ) CyclicMomentumUpdaterHook          
+(NORMAL      ) DistSamplerSeedHook                
+(NORMAL      ) DistEvalHook                       
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) StepLrUpdaterHook                  
+(HIGH        ) CyclicMomentumUpdaterHook          
+(NORMAL      ) DistEvalHook                       
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_train_iter:
+(ABOVE_NORMAL) OptimizerHook                      
+(NORMAL      ) CheckpointHook                     
+(NORMAL      ) DistEvalHook                       
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) CheckpointHook                     
+(NORMAL      ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+before_val_epoch:
+(NORMAL      ) DistSamplerSeedHook                
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+before_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_epoch:
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+after_run:
+(VERY_LOW    ) TextLoggerHook                     
+(VERY_LOW    ) TensorboardLoggerHook              
+ -------------------- 
+2025-02-28 14:42:11,802 - mmdet - INFO - workflow: [('train', 1)], max: 20 epochs
+2025-02-28 14:42:11,802 - mmdet - INFO - Checkpoints will be saved to /ssd/home/bxk/CODE-40902-PhD-2/LGDD/work_dirs/TJ4D-radarpillarnet_4x4_20e by HardDiskBackend.
+2025-02-28 14:42:42,805 - mmcv - INFO - Reducer buckets have been rebuilt in this iteration.
+2025-02-28 14:42:57,648 - mmdet - INFO - Epoch [1][50/357]	lr: 3.000e-03, eta: 1:48:14, time: 0.916, data_time: 0.615, memory: 13556, loss_cls: 1.0072, loss_bbox: 1.0525, loss_dir: 0.1269, loss: 2.1866, grad_norm: 1.0725
+2025-02-28 14:43:12,686 - mmdet - INFO - Epoch [1][100/357]	lr: 3.000e-03, eta: 1:11:22, time: 0.301, data_time: 0.004, memory: 13556, loss_cls: 0.8620, loss_bbox: 1.0122, loss_dir: 0.1155, loss: 1.9897, grad_norm: 1.2039
+2025-02-28 14:43:27,765 - mmdet - INFO - Epoch [1][150/357]	lr: 3.000e-03, eta: 0:58:57, time: 0.302, data_time: 0.003, memory: 13556, loss_cls: 0.8600, loss_bbox: 1.0211, loss_dir: 0.1136, loss: 1.9948, grad_norm: 1.0888
+2025-02-28 14:43:42,836 - mmdet - INFO - Epoch [1][200/357]	lr: 3.000e-03, eta: 0:52:37, time: 0.301, data_time: 0.003, memory: 13558, loss_cls: 0.8587, loss_bbox: 1.0192, loss_dir: 0.1155, loss: 1.9935, grad_norm: 1.0573
+2025-02-28 14:43:57,936 - mmdet - INFO - Epoch [1][250/357]	lr: 3.000e-03, eta: 0:48:43, time: 0.302, data_time: 0.003, memory: 13558, loss_cls: 0.8474, loss_bbox: 0.9873, loss_dir: 0.1148, loss: 1.9494, grad_norm: 1.1197
+2025-02-28 14:44:13,011 - mmdet - INFO - Epoch [1][300/357]	lr: 3.000e-03, eta: 0:46:02, time: 0.301, data_time: 0.003, memory: 13558, loss_cls: 0.8464, loss_bbox: 0.9998, loss_dir: 0.1197, loss: 1.9659, grad_norm: 1.0677
+2025-02-28 14:44:28,137 - mmdet - INFO - Epoch [1][350/357]	lr: 3.000e-03, eta: 0:44:03, time: 0.303, data_time: 0.004, memory: 13558, loss_cls: 0.8502, loss_bbox: 0.9890, loss_dir: 0.1120, loss: 1.9512, grad_norm: 1.0159
+2025-02-28 14:45:15,949 - mmdet - INFO - Epoch [2][50/357]	lr: 3.000e-03, eta: 0:50:00, time: 0.901, data_time: 0.598, memory: 13558, loss_cls: 0.8443, loss_bbox: 0.9983, loss_dir: 0.1141, loss: 1.9567, grad_norm: 0.9764
+2025-02-28 14:45:30,984 - mmdet - INFO - Epoch [2][100/357]	lr: 3.000e-03, eta: 0:47:51, time: 0.301, data_time: 0.003, memory: 13558, loss_cls: 0.8481, loss_bbox: 0.9820, loss_dir: 0.1152, loss: 1.9453, grad_norm: 0.9442
+2025-02-28 14:45:46,060 - mmdet - INFO - Epoch [2][150/357]	lr: 3.000e-03, eta: 0:46:06, time: 0.302, data_time: 0.003, memory: 13560, loss_cls: 0.8458, loss_bbox: 0.9965, loss_dir: 0.1150, loss: 1.9573, grad_norm: 0.9858
+2025-02-28 14:46:01,165 - mmdet - INFO - Epoch [2][200/357]	lr: 3.000e-03, eta: 0:44:37, time: 0.302, data_time: 0.003, memory: 13560, loss_cls: 0.8391, loss_bbox: 0.9647, loss_dir: 0.1175, loss: 1.9213, grad_norm: 0.9171
+2025-02-28 14:46:16,228 - mmdet - INFO - Epoch [2][250/357]	lr: 3.000e-03, eta: 0:43:20, time: 0.301, data_time: 0.003, memory: 13560, loss_cls: 0.8378, loss_bbox: 0.9667, loss_dir: 0.1122, loss: 1.9167, grad_norm: 0.9373
+2025-02-28 14:46:31,332 - mmdet - INFO - Epoch [2][300/357]	lr: 3.000e-03, eta: 0:42:13, time: 0.302, data_time: 0.003, memory: 13560, loss_cls: 0.8445, loss_bbox: 0.9769, loss_dir: 0.1166, loss: 1.9381, grad_norm: 0.8442
+2025-02-28 14:46:46,412 - mmdet - INFO - Epoch [2][350/357]	lr: 3.000e-03, eta: 0:41:13, time: 0.302, data_time: 0.004, memory: 13560, loss_cls: 0.8447, loss_bbox: 0.9740, loss_dir: 0.1147, loss: 1.9334, grad_norm: 0.9777
+2025-02-28 14:47:34,553 - mmdet - INFO - Epoch [3][50/357]	lr: 3.000e-03, eta: 0:44:07, time: 0.908, data_time: 0.607, memory: 13560, loss_cls: 0.8504, loss_bbox: 0.9799, loss_dir: 0.1149, loss: 1.9451, grad_norm: 0.8834
+2025-02-28 14:47:49,653 - mmdet - INFO - Epoch [3][100/357]	lr: 3.000e-03, eta: 0:43:02, time: 0.302, data_time: 0.003, memory: 13560, loss_cls: 0.8434, loss_bbox: 0.9645, loss_dir: 0.1111, loss: 1.9190, grad_norm: 0.8865
+2025-02-28 14:48:04,782 - mmdet - INFO - Epoch [3][150/357]	lr: 3.000e-03, eta: 0:42:03, time: 0.303, data_time: 0.003, memory: 13560, loss_cls: 0.8449, loss_bbox: 0.9776, loss_dir: 0.1116, loss: 1.9342, grad_norm: 0.8718

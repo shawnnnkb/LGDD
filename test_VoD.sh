@@ -1,7 +1,12 @@
-CONFIG_PATH=./projects/LGDD/configs/VoD-LGDD_4x4_24e.py
-CHECKPOINT_PATH=./projects/LGDD/checkpoints/VoD-best.pth
-OUTPUT_NAME=vod-LGDD
-PRED_RESULTS=./tools_det3d/view-of-delft-dataset/pred_results/$OUTPUT_NAME 
+# CONFIG_PATH=./projects/LGDD/configs/VoD-LGDD_4x4_24e.py
+# CHECKPOINT_PATH=./projects/LGDD/checkpoints/VoD-best.pth
+# OUTPUT_NAME=vod-LGDD
+# PRED_RESULTS=./tools_det3d/view-of-delft-dataset/pred_results/$OUTPUT_NAME 
+
+CONFIG_PATH=./projects/RadarPillarNet/configs/VoD-radarpillarnet_4x1_80e.py
+CHECKPOINT_PATH=./projects/RadarPillarNet/checkpoints/VoD-baseline.pth
+OUTPUT_NAME=vod-RadarPillarNet
+PRED_RESULTS=./tools_det3d/view-of-delft-dataset/pred_results/$OUTPUT_NAME
 
 GPUS="4"
 PORT=${PORT:-29500}
