@@ -20,8 +20,8 @@ from mmdet.datasets import replace_ImageToTensor
 
 def parse_args():
     parser = argparse.ArgumentParser(description='MMDet test (and eval) a model')
-    parser.add_argument('--config', default='./projects/LGDD/configs/vod-LGDD_2x4_24e.py', help='test config file path')
-    parser.add_argument('--checkpoint', default='./projects/LGDD/checkpoints/VoD-best.pth', help='checkpoint file')
+    parser.add_argument('--config', default='./projects/LGDD/configs/TJ4D-LGDD_4x4_24e.py', help='test config file path')
+    parser.add_argument('--checkpoint', default='./projects/LGDD/checkpoints/TJ4D-best.pth', help='checkpoint file')
     parser.add_argument('--show', default=False, help='show results')
     parser.add_argument('--show-dir', default='./point_cloud_det3d', help='directory where results will be saved')
     parser.add_argument('--out', help='output result file in pickle format')
@@ -39,7 +39,7 @@ def parse_args():
     parser.add_argument(
         '--eval',
         type=str,
-        # default='mAP', # for debugging
+        default='mAP', # for debugging
         nargs='+',
         help='evaluation metrics, which depends on the dataset, e.g., "bbox",'
         ' "segm", "proposal" for COCO, and "mAP", "recall" for PASCAL VOC')

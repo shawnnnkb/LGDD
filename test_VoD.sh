@@ -1,11 +1,11 @@
-CONFIG_PATH=./projects/LGDD/configs/vod-LGDD_2x4_24e.py
+CONFIG_PATH=./projects/LGDD/configs/VoD-LGDD_4x4_24e.py
 CHECKPOINT_PATH=./projects/LGDD/checkpoints/VoD-best.pth
 OUTPUT_NAME=vod-LGDD
 PRED_RESULTS=./tools_det3d/view-of-delft-dataset/pred_results/$OUTPUT_NAME 
 
-GPUS="5"
-PORT=${PORT:-19500}
-CUDA_VISIBLE_DEVICES="0,1,2,3,5" \
+GPUS="4"
+PORT=${PORT:-29500}
+CUDA_VISIBLE_DEVICES="0,1,3,4" \
 # CUDA_VISIBLE_DEVICES="0" \
 PYTHONPATH="$(dirname $0)/..":$PYTHONPATH \
 python -m torch.distributed.launch \

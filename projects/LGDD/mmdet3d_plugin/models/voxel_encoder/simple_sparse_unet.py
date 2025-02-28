@@ -121,6 +121,7 @@ if __name__ == '__main__':
 
     # 1. 创建模型
     model = build_backbone(cfg)
+    model = model.to('cuda')
 
     # 2. 生成输入数据
     batch_size = 2
@@ -146,8 +147,8 @@ if __name__ == '__main__':
 
     # 将数据包装在字典中
     voxel_info = {
-    'voxel_feats': voxel_feats,
-    'voxel_coors': voxel_coors,
+    'voxel_feats': voxel_feats.to('cuda'),
+    'voxel_coors': voxel_coors.to('cuda'),
     }
 
     # 3. 进行前向传播

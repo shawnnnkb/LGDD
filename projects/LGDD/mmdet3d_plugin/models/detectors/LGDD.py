@@ -256,21 +256,12 @@ class LGDD(MVXFasterRCNN):
     def fusion_cluster_pts_feats(self, pts_feats, cluster_outs, img_metas=None):
         """Extract features from images and cluster_instances."""
 
-        # -------------将中心特征和坐标映射到BEV--------------------
-
         batch_size = pts_feats[0].shape[0]
         bev_size = pts_feats[0].shape[2:4]
-
         cluster_bev = map2bev(cluster_outs, bev_size, batch_size, self.num_classes)
-        
-        # -------------融合为pts_feats(BEV形式)--------------------
-        
         if cluster_bev.shape[2:] != pts_feats[0].shape[2:]:
-            cluster_bev = F.interpolate(cluster_bev, pts_feats[0].shape[2:], mode='bilinear',
-                                                     align_corners=True)
-
+            cluster_bev = F.interpolate(cluster_bev, pts_feats[0].shape[2:], mode='bilinear', align_corners=True)
         assert cluster_bev.shape[0] == pts_feats[0].shape[0]
-        
         fused_feats = [self.fusion_layer(cluster_bev, pts_feats[0])]
 
         return fused_feats

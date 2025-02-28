@@ -1,14 +1,9 @@
-CONFIG_PATH=./projects/SIFormer/configs/TJ4D-SIFormer_det3d_2x4_24e.py
-CHECKPOINT_PATH=./projects/SIFormer/checkpoints/best_TJ4D_radar.pth
-
-# python tools_det3d/test.py \
-# --config  $CONFIG_PATH \
-# --checkpoint $CHECKPOINT_PATH \
-# --eval mAP
+CONFIG_PATH=./projects/LGDD/configs/TJ4D-LGDD_4x4_24e.py
+CHECKPOINT_PATH=./projects/LGDD/checkpoints/TJ4D-best.pth
 
 GPUS="4"
-PORT=${PORT:-19500}
-CUDA_VISIBLE_DEVICES="0,1,2,3" \
+PORT=${PORT:-29500}
+CUDA_VISIBLE_DEVICES="0,1,3,4" \
 PYTHONPATH="$(dirname $0)/..":$PYTHONPATH \
 python -m torch.distributed.launch \
     --nproc_per_node=$GPUS \
@@ -18,3 +13,8 @@ python -m torch.distributed.launch \
     --checkpoint $CHECKPOINT_PATH \
     --eval mAP \
     --launcher pytorch ${@:4}
+
+# python tools_det3d/test.py \
+# --config  $CONFIG_PATH \
+# --checkpoint $CHECKPOINT_PATH \
+# --eval mAP
