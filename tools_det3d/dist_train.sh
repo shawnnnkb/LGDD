@@ -24,5 +24,7 @@ python -m torch.distributed.launch \
     --launcher pytorch ${@:3}
     
 # NOTE: remind train epochs in config file
-# nohup python -u ./tools_det3d/train.py --config ./projects/LGDD/configs/vod-LGDD_baseline_4x1_80e.py > vod-LGDD_baseline_4x1_80e.log 2>&1 &
+# nohup python -u ./tools_det3d/train.py --config ./projects/RadarPillarNet/configs/TJ4D-radarpillarnet_4x1_80e.py > TJ4D-radarpillarnet_4x1_80e.log 2>&1 &
 # nohup bash ./tools_det3d/dist_train.sh ./projects/RadarPillarNet/configs/TJ4D-radarpillarnet_4x4_20e.py 4 > TJ4D-radarpillarnet_4x4_20e.log 2>&1 &
+
+

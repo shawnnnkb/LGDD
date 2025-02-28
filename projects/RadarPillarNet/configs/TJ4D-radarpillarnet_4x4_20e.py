@@ -11,7 +11,7 @@ file_client_args = dict(backend='disk')
 
 # model settings
 base_channels = 64
-voxel_size = [0.16, 0.16, 5]
+voxel_size = [0.16, 0.16, 6.00]
 
 # model settings
 model = dict(
@@ -31,7 +31,7 @@ model = dict(
         legacy=False,
         with_velocity_snr_center=True,),
     middle_encoder=dict(
-        type='PointPillarsScatter', in_channels=base_channels, output_shape=[992, 864]),
+        type='PointPillarsScatter', in_channels=base_channels, output_shape=[496, 432]),
     backbone=dict(
         type='SECOND',
         in_channels=base_channels,
@@ -120,7 +120,7 @@ model = dict(
 # pipline settings
 train_pipeline = [
     dict(type='LoadPointsFromFile', coord_type='LIDAR', load_dim=8, use_dim=[0,1,2,3,5], file_client_args=file_client_args),
-    dict(type='LoadAnnotations3D', with_bbox_3d=True, with_label_3d=True,file_client_args=file_client_args),
+    dict(type='LoadAnnotations3D', with_bbox_3d=True, with_label_3d=True, file_client_args=file_client_args),
     dict(type='RandomFlip3D', flip_ratio_bev_horizontal=0.5),
     dict(type='GlobalRotScaleTrans', rot_range=[0.0, 0.0], scale_ratio_range=[0.95, 1.05]),
     dict(type='PointsRangeFilter', point_cloud_range=point_cloud_range),
@@ -189,23 +189,19 @@ data = dict(
         box_type_3d='LiDAR'))
 
 # Training settings
-max_epochs = 20
 lr = 0.003
+max_epochs = 20
 optimizer = dict(type='AdamW', lr=lr, betas=(0.95, 0.99), weight_decay=0.01)
-optimizer_config = dict(grad_clip=dict(max_norm=10, norm_type=2))
+optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 runner = dict(type='EpochBasedRunner', max_epochs=max_epochs)
 lr_config = dict(
-    policy='step',
+    policy='CosineAnnealing',
+    by_epoch=False,
     warmup=None,
-    warmup_iters=1000,
-    warmup_ratio=1.0 / 1000,
-    step=[35, 45])
-momentum_config = dict(
-    policy='cyclic',
-    target_ratio=(0.85 / 0.95, 1),
-    cyclic_times=1,
-    step_ratio_up=0.4,
-)
+    warmup_iters=500,
+    warmup_ratio=1.0 / 10,
+    min_lr_ratio=1e-5)
+momentum_config = None
 
 # log checkpoint & evaluation
 evaluation = dict(interval=5, pipeline=eval_pipeline)

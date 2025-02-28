@@ -20,8 +20,8 @@ from mmcv.runner.dist_utils import master_only
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
-    parser.add_argument('--config', default='./projects/LGDD/configs/tj4d-ssad_4x4_24e.py', help='train config file path')
-    parser.add_argument('--work-dir', help='/projects/LGDD/work_dirs/vod-LGDD_ssad_4x4_24e')
+    parser.add_argument('--config', default='./projects/RadarPillarNet/configs/TJ4D-radarpillarnet_4x4_20e.py', help='train config file path')
+    parser.add_argument('--work-dir', help='')
     parser.add_argument(
         '--resume-from', help='the checkpoint file to resume from')
     parser.add_argument(
@@ -100,28 +100,6 @@ def copy_framework_configs(cfg, args):
     src_path = args.config
     dst_path = os.path.join(cfg.work_dir, 'configs.py')
     shutil.copy(src_path, dst_path)
-
-def load_strict_model_from_30903(model, check_point_path):
-    # Load checkpoint
-    state_dict = torch.load(check_point_path, map_location='cpu')
-
-    # Create a new checkpoint dictionary
-    new_ckpt = OrderedDict()
-    # Mapping 'bbox_head' to 'pts_bbox_head' and loading all keys
-    for k, v in state_dict.items():
-        # Special case for 'bbox_head' -> 'pts_bbox_head'
-        if 'bbox_head' in k:
-            new_k = k.replace('bbox_head', 'pts_bbox_head')
-            new_ckpt[new_k] = v
-        else:
-            new_ckpt[k] = v
-    # Load the state_dict into the model
-    missing_keys, unexpected_keys = model.load_state_dict(new_ckpt, strict=False)
-    # Print missing or unexpected keys
-    assert len(missing_keys) == 0, print("Missing keys:", missing_keys)
-    assert len(unexpected_keys) == 0, print("Unexpected keys:", unexpected_keys)
-
-    return model
 
 def load_pretrained_model(model, check_point_path, mapping_list):
     if check_point_path is None:
@@ -297,7 +275,7 @@ def main():
     model.CLASSES = datasets[0].CLASSES
     
     #################################### pretrained radar for furthur RC pretrain ################################
-    if 'load_radar_from' in cfg:
+    if 'load_radar_from' in cfg and cfg.load_radar_from is not None:
         print('load_radar_from is exists, which means we load pretrained pure radar ')
         print('model, thus need param state_dict mapping, %s'%(cfg.load_radar_from))
         mapping_list = {
@@ -306,28 +284,6 @@ def main():
             'backbone': 'pts_backbone',
             'neck': 'pts_neck'}
         model = load_pretrained_model(model, cfg.load_radar_from, mapping_list)
-    #################################### pretrained lidar for furthur RC pretrain ################################
-    if 'load_lidar_from' in cfg:
-        print('load_lidar_from is exists, which means we load pretrained pure lidar ')
-        print('model, thus need param state_dict mapping, %s'%(cfg.load_radar_from))
-        mapping_list = {
-            'voxel_encoder': 'lidar_pts_voxel_encoder',
-            'middle_encoder': 'lidar_pts_middle_encoder',
-            'backbone': 'lidar_pts_backbone',
-            'neck': 'lidar_pts_neck'}
-        model = load_pretrained_model(model, cfg.load_lidar_from, mapping_list)
-    #################################### pretrained votenet for further fusion ################################
-    if 'load_segmentor_from' in cfg:
-        print('load_segmentor_from is exists, which means we load pretrained segmentor ')
-        print('model, thus need param state_dict mapping, %s'%(cfg.load_segmentor_from))
-        mapping_list = {
-            'voxel_encoder': 'segmentor.voxel_encoder',
-            'backbone': 'segmentor.backbone',
-            'segmentation_head': 'segmentor.segmentation_head'}
-        model = load_pretrained_model(model, cfg.load_segmentor_from, mapping_list)
-    ###############################################    strcit load     ###########################################
-    if 'load_strict_from_30903' in cfg: 
-        load_strict_model_from_30903(model, check_point_path='projects/LGDD/checkpoints/model_weights_30903.pth')
         
     # mmdet3d_wandb_init(cfg, project)
     model_parameters = sum(p.numel() for p in model.parameters())
