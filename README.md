@@ -5,7 +5,7 @@
 - **2025.03.01** Code v1.0 released
 - **2025.02.28** Submit to IROS 2025
 
-<iframe id="video" width="1000" height="480" src="docs/all_Figures/LGDD-demo.mp4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen=""></iframe>
+[![LGDD-demo](docs/all_Figures/LGDD-demo.png)](docs/all_Figures/LGDD-demo.mp4)
 
 ## 📜 Abstract
  
