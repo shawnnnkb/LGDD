@@ -1,6 +1,9 @@
 CONFIG_PATH=./projects/LGDD/configs/TJ4D-LGDD_4x4_24e.py
 CHECKPOINT_PATH=./projects/LGDD/checkpoints/TJ4D-best.pth
 
+# CONFIG_PATH=./projects/RadarPillarNet/configs/TJ4D-radarpillarnet_4x4_20e.py
+# CHECKPOINT_PATH=./projects/RadarPillarNet/checkpoints/TJ4D-baseline.pth
+
 GPUS="4"
 PORT=${PORT:-29500}
 CUDA_VISIBLE_DEVICES="0,1,3,4" \
