@@ -413,7 +413,6 @@ class Anchor3DHead(BaseModule, AnchorTrainMixin):
             dir_cls_pred_list = [
                 dir_cls_preds[i][img_id].detach() for i in range(num_levels)
             ]
-
             input_meta = input_metas[img_id]
             proposals = self.get_bboxes_single(cls_score_list, bbox_pred_list,
                                                dir_cls_pred_list, mlvl_anchors,

@@ -20,7 +20,7 @@ from mmcv.runner.dist_utils import master_only
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
-    parser.add_argument('--config', default='./projects/RadarPillarNet/configs/TJ4D-radarpillarnet_4x4_20e.py', help='train config file path')
+    parser.add_argument('--config', default='./projects/LGDD/configs/VoD-LGDD_4x4_24e.py', help='train config file path')
     parser.add_argument('--work-dir', help='')
     parser.add_argument(
         '--resume-from', help='the checkpoint file to resume from')

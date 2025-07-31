@@ -2,10 +2,9 @@
 
 ## 🗓️ News
 
+- **2025.06.16** IROS 2025 acceptance
 - **2025.03.01** Code v1.0 released
 - **2025.02.28** Submit to IROS 2025
-
-<video width="1000" height="480" controls> <source src="docs/all_Figures/LGDD-demo.mp4" type="video/mp4">Your browser does not support the video tag.</video>
 
 ## 📜 Abstract
  

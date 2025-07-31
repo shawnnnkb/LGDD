@@ -54,6 +54,7 @@ class _Voxelization(Function):
             dynamic_voxelize(points, coors, voxel_size, coors_range, 3)
             return coors
         else:
+            # print("=== DEBUG: points.shape ===", points.shape)
             voxels = points.new_zeros(
                 size=(max_voxels, max_points, points.size(1)))
             coors = points.new_zeros(size=(max_voxels, 3), dtype=torch.int)

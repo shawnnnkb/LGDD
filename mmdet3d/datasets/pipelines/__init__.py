@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmdet.datasets.pipelines import Compose
 from .dbsampler import DataBaseSampler
-from .formating import Collect3D, DefaultFormatBundle, DefaultFormatBundle3D
+from .formating import Collect3D, DefaultFormatBundle, DefaultFormatBundle3D, CustomCollect3D
 from .loading import (LoadAnnotations3D, LoadImageFromFileMono3D,
                       LoadMultiViewImageFromFiles, LoadPointsFromFile,
                       LoadPointsFromMultiSweeps, NormalizePointsColor,
@@ -17,7 +17,7 @@ from .transforms_3d import (BackgroundPointsFilter, GlobalAlignment,
 
 __all__ = [
     'ObjectSample', 'RandomFlip3D', 'ObjectNoise', 'GlobalRotScaleTrans',
-    'PointShuffle', 'ObjectRangeFilter', 'PointsRangeFilter', 'Collect3D',
+    'PointShuffle', 'ObjectRangeFilter', 'PointsRangeFilter', 'Collect3D', 'CustomCollect3D',
     'Compose', 'LoadMultiViewImageFromFiles', 'LoadPointsFromFile',
     'DefaultFormatBundle', 'DefaultFormatBundle3D', 'DataBaseSampler',
     'NormalizePointsColor', 'LoadAnnotations3D', 'IndoorPointSample',

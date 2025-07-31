@@ -4,14 +4,14 @@ OUTPUT_NAME=vod-LGDD
 PRED_RESULTS=./tools_det3d/view-of-delft-dataset/pred_results/$OUTPUT_NAME 
 
 # CONFIG_PATH=./projects/RadarPillarNet/configs/VoD-radarpillarnet_4x1_80e.py
-# CHECKPOINT_PATH=./projects/RadarPillarNet/checkpoints/VoD-baseline.pth
+# # CHECKPOINT_PATH=./projects/RadarPillarNet/checkpoints/VoD-baseline.pth
+# CHECKPOINT_PATH=./work_dirs/VoD-radarpillarnet_4x1_80e/epoch_40.pth
 # OUTPUT_NAME=vod-RadarPillarNet
 # PRED_RESULTS=./tools_det3d/view-of-delft-dataset/pred_results/$OUTPUT_NAME
 
-GPUS="4"
+GPUS="1"
 PORT=${PORT:-29500}
-CUDA_VISIBLE_DEVICES="0,1,3,4" \
-# CUDA_VISIBLE_DEVICES="0" \
+CUDA_VISIBLE_DEVICES="2" \
 PYTHONPATH="$(dirname $0)/..":$PYTHONPATH \
 python -m torch.distributed.launch \
     --nproc_per_node=$GPUS \

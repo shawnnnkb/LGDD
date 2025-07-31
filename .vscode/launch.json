@@ -10,8 +10,14 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "justMyCode": false,
-            "purpose": ["debug-in-terminal"]
+            "justMyCode": true,
+            "cwd": "/ssd/home/bxk/CODE-40902-PhD-2/LGDD",
+            "args": [
+                "--config",
+                "/ssd/home/bxk/CODE-40902-PhD-2/LGDD/projects/RadarPillarNet/configs/VoD-radarpillarnet_4x1_80e.py",
+                "--checkpoint",
+                "/ssd/home/bxk/CODE-40902-PhD-2/LGDD/work_dirs/VoD-radarpillarnet_4x1_80e/epoch_40.pth"
+            ]
         }
     ]
 }

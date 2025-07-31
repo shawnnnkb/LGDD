@@ -12,10 +12,31 @@ file_client_args = dict(backend='disk')
 # model settings
 base_channels = 64
 voxel_size = [0.16, 0.16, 5]
+img_norm_cfg = dict(
+    mean=[103.530, 116.280, 123.675], 
+    std=[1.0, 1.0, 1.0], to_rgb=False,
+)
+# ida_aug_conf = {
+#     'resize_lim': (0.50, 0.70),
+#     'final_dim': (1216, 1936),
+#     'final_dim_test': (800, 1280),
+#     'bot_pct_lim': (0.0, 0.0),
+#     'top_pct_lim': (0.0, 0.3),
+#     'rot_lim': (-2.7, 2.7),
+#     'rand_flip': True,
+# }
+# bda_aug_conf = dict(
+#     rot_range=(-0.3925, 0.3925),
+#     scale_ratio_range=(0.90, 1.10),
+#     translation_std=(1.0, 1.0, 1.0),
+#     flip_dx_ratio=0.0, # no need for KITTI, which x > 0
+#     flip_dy_ratio=0.5)
 
 # model settings
 model = dict(
     type='VoxelNet',
+    img_norm_cfg=img_norm_cfg,
+    point_cloud_range=point_cloud_range,
     voxel_layer=dict(
         max_num_points=10,
         point_cloud_range= point_cloud_range,
@@ -117,15 +138,26 @@ train_pipeline = [
     dict(type='DefaultFormatBundle3D', class_names=class_names),
     dict(type='Collect3D', keys=['points', 'gt_bboxes_3d', 'gt_labels_3d'])
 ]
+# test_pipeline = [
+#     dict(type='LoadPointsFromFile', coord_type='LIDAR', load_dim=7, use_dim=[0,1,2,3,5], file_client_args=file_client_args),
+#     dict(type='MultiScaleFlipAug3D', img_scale=(1936, 1216), pts_scale_ratio=1, flip=False,
+#         transforms=[
+#             dict(type='GlobalRotScaleTrans', rot_range=[0.0, 0.0], scale_ratio_range=[1.0, 1.0], translation_std=[0.0, 0.0, 0.0]),
+#             dict(type='RandomFlip3D'),
+#             dict(type='PointsRangeFilter', point_cloud_range=point_cloud_range),
+#             dict(type='DefaultFormatBundle3D',  class_names=class_names, with_label=False),
+#             dict(type='Collect3D', keys=['points'])])
+# ]
 test_pipeline = [
     dict(type='LoadPointsFromFile', coord_type='LIDAR', load_dim=7, use_dim=[0,1,2,3,5], file_client_args=file_client_args),
-    dict(type='MultiScaleFlipAug3D', img_scale=(1936, 1216), pts_scale_ratio=1, flip=False,
-        transforms=[
-            dict(type='GlobalRotScaleTrans', rot_range=[0.0, 0.0], scale_ratio_range=[1.0, 1.0], translation_std=[0.0, 0.0, 0.0]),
-            dict(type='RandomFlip3D'),
-            dict(type='PointsRangeFilter', point_cloud_range=point_cloud_range),
-            dict(type='DefaultFormatBundle3D',  class_names=class_names, with_label=False),
-            dict(type='Collect3D', keys=['points'])])
+    dict(type='LoadImageFromFile', to_float32=True),
+    dict(type='LoadAnnotations3D', with_bbox_3d=True, with_label_3d=True, file_client_args=file_client_args),
+    # dict(type='ImageAug3D', data_aug_conf=ida_aug_conf, is_train=False),
+    # dict(type='GlobalRotScaleTransFlipAll', bda_aug_conf=bda_aug_conf, is_train=False),
+    dict(type='PointsRangeFilter', point_cloud_range=point_cloud_range),
+    dict(type='Normalize', **img_norm_cfg), 
+    dict(type='DefaultFormatBundle3D', class_names=class_names, with_label=False),
+    dict(type='CustomCollect3D', keys=['img', 'points', 'gt_bboxes_3d', 'gt_labels_3d']),
 ]
 eval_pipeline = [
     dict( type='LoadPointsFromFile', coord_type='LIDAR', load_dim=7, use_dim=[0,1,2,3,5], file_client_args=file_client_args),
@@ -162,7 +194,7 @@ data = dict(
         pipeline=test_pipeline,
         modality=input_modality,
         classes=class_names,
-        test_mode=True,
+        test_mode=False,
         box_type_3d='LiDAR'),
     test=dict(
         type=dataset_type,
@@ -173,7 +205,7 @@ data = dict(
         pipeline=test_pipeline,
         modality=input_modality,
         classes=class_names,
-        test_mode=True,
+        test_mode=False,
         box_type_3d='LiDAR'))
 
 # Training settings
