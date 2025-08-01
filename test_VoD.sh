@@ -9,9 +9,9 @@ PRED_RESULTS=./tools_det3d/view-of-delft-dataset/pred_results/$OUTPUT_NAME
 # OUTPUT_NAME=vod-RadarPillarNet
 # PRED_RESULTS=./tools_det3d/view-of-delft-dataset/pred_results/$OUTPUT_NAME
 
-GPUS="1"
+GPUS="3"
 PORT=${PORT:-29500}
-CUDA_VISIBLE_DEVICES="2" \
+CUDA_VISIBLE_DEVICES="0,1,3" \
 PYTHONPATH="$(dirname $0)/..":$PYTHONPATH \
 python -m torch.distributed.launch \
     --nproc_per_node=$GPUS \
